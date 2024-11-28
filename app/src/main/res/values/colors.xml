@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="purple">#643BF7</color>
+
+    ///random color
+ <color name="color1">#E694FF</color>
+ <color name="color2">#C10059</color>
+ <color name="color3">#EE6392</color>
+ <color name="color4">#396FDB</color>
+ <color name="color5">#6DADE0</color>
+ <color name="color6">#E25F33</color>
+ <color name="color7">#DD9E40</color>
+ <color name="color8">#DDCF58</color>
+ <color name="color9">#55F3E4</color>
+
+</resources>
