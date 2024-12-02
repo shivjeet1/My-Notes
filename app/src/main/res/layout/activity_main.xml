@@ -31,24 +31,26 @@
         android:layout_margin="10dp"
         app:cardCornerRadius="20dp"
         android:layout_below="@+id/navLL">
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:queryHint="Search Notes"
-        app:iconifiedByDefault="false"
-        android:background="#906FD6"
-        />
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:background="#906FD6"
+            app:iconifiedByDefault="false"
+            app:queryHint="Search Notes" />
     </androidx.cardview.widget.CardView>
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/noteRv"
+        android:layout_width="400dp"
+        android:layout_height="561dp"
         android:layout_below="@+id/searchViewCard"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_marginHorizontal="8dp"
-        android:layout_marginVertical="8dp"/>
+        android:layout_marginVertical="8dp"
+        android:layout_marginTop="11dp" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addBtn"
         android:layout_width="wrap_content"
