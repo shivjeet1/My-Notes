@@ -63,7 +63,7 @@ My-Notes/
 
 The project is simple enough to be grasped by beginners, yet structured enough to allow modular upgrades as your understanding of Android grows. As it evolves, it will serve both as a reference and a base for more complex app-building adventures.
 
-📱 [``Download APK``](https://github.com/shivjeet1/My-Notes/releases)
+[``📱Download APK``](https://github.com/shivjeet1/My-Notes/releases)
 
 ---
 
