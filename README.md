@@ -1,12 +1,3 @@
-## Introduction
-
-**My Notes** is a lightweight Android application designed to simplify note management. Built with Java and native Android SDK, it allows users to create and view notes through a minimalistic user interface. The project is currently in its early development stages, featuring a clean design and intuitive workflow.
-
-This project is aimed at showcasing foundational Android development concepts such as activity lifecycle management, event listeners, UI inflation from XML, and Java-based logic separation. It's a solid starting point for any Android beginner.
-
-🔗 GitHub Repository: [My-Notes by shivjeet1](https://github.com/shivjeet1/My-Notes)
-
----
 ## Description
 
 **My Notes** is a beginner-friendly Android application that serves as a simple and elegant note-taking solution. Developed in Java with the native Android SDK, this app demonstrates core Android development concepts including UI handling, memory management, and interaction through Java-based event-driven logic.
@@ -26,7 +17,20 @@ The application currently uses an `ArrayList<String>` to temporarily store note 
 Behind the scenes, the `NoteManager` class encapsulates the logic for adding, retrieving, and managing notes. This abstraction helps maintain separation of concerns and prepares the codebase for modular growth (such as swapping in a database later).
 
 ---
+## UI Design
 
+The current UI uses basic Android Views like `EditText`, `Button`, and `TextView`. It is clean, functional, and easy to navigate. All event handlers are wired via `setOnClickListener()` in Java code. Below are four screenshots from the actual app:
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px;">
+  <img src="/images/mynotes/ui-demo1.png" width="45%" />
+  <img src="/images/mynotes/ui-demo2.png" width="45%" />
+  <img src="/images/mynotes/ui-demo3.png" width="45%" />
+  <img src="/images/mynotes/ui-demo4.png" width="45%" />
+</div>
+
+> All UI elements are designed using XML with a focus on simplicity and readability. The layout is defined in `activity_main.xml`, using a vertical `LinearLayout` with scroll support.
+
+---
 ## Project Structure
 
 ```plaintext
@@ -53,28 +57,13 @@ My-Notes/
 ```
 
 ---
-
-## UI Design
-
-The current UI uses basic Android Views like `EditText`, `Button`, and `TextView`. It is clean, functional, and easy to navigate. All event handlers are wired via `setOnClickListener()` in Java code. Below are four screenshots from the actual app:
-
-<div style="display: flex; flex-wrap: wrap; gap: 16px;">
-  <img src="/images/mynotes/ui-demo1.png" width="45%" />
-  <img src="/images/mynotes/ui-demo2.png" width="45%" />
-  <img src="/images/mynotes/ui-demo3.png" width="45%" />
-  <img src="/images/mynotes/ui-demo4.png" width="45%" />
-</div>
-
-> All UI elements are designed using XML with a focus on simplicity and readability. The layout is defined in `activity_main.xml`, using a vertical `LinearLayout` with scroll support.
-
----
 ## Conclusion
 
 **My Notes** is a clean, minimal Android project with significant educational value. It walks through the Android project lifecycle, UI binding using XML, logic separation in Java, and sets the stage for future enhancements using best practices like MVVM, Room, and Jetpack components.
 
 The project is simple enough to be grasped by beginners, yet structured enough to allow modular upgrades as your understanding of Android grows. As it evolves, it will serve both as a reference and a base for more complex app-building adventures.
 
-📱 [**Download APK**](https://github.com/shivjeet1/My-Notes/releases)
+📱 [``Download APK``](https://github.com/shivjeet1/My-Notes/releases)
 
 ---
 
