@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-     <item android:id="@+id/pin"
-         android:title="Pin/UnPin"/>
-    <item android:id="@+id/delete"
-        android:title="Delete"/>
+    <item
+        android:id="@+id/pin"
+        android:icon="@drawable/ic_pin_24"
+        android:title="@string/pin_note" />
+    <item
+        android:id="@+id/delete"
+        android:icon="@drawable/ic_delete_24"
+        android:title="@string/delete_note" />
 </menu>

@@ -1,30 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="purple">#643BF7</color>
+    <!-- Primitive palette: warm paper neutrals and one deep indigo. -->
+    <color name="stone_50">#F7F5F2</color>
+    <color name="stone_100">#EFEAE4</color>
+    <color name="stone_200">#DCD5CA</color>
+    <color name="stone_400">#7A7368</color>
+    <color name="stone_600">#5E5A54</color>
+    <color name="stone_900">#1B1A17</color>
+    <color name="paper">#FFFDFA</color>
+    <color name="indigo_50">#E8E3FF</color>
+    <color name="indigo_600">#4F46B8</color>
+    <color name="indigo_900">#221C5C</color>
+    <color name="red_700">#B3261E</color>
+    <color name="inverse_ink">#2F2B27</color>
 
-    ///random color
- <color name="color1">#E694FF</color>
- <color name="color2">#C10059</color>
- <color name="color3">#EE6392</color>
- <color name="color4">#396FDB</color>
- <color name="color5">#6DADE0</color>
- <color name="color6">#E25F33</color>
- <color name="color7">#DD9E40</color>
- <color name="color8">#DDCF58</color>
- <color name="color9">#55F3E4</color>
-    <color name="color10">#FECA3B</color>
-    <color name="color11">#D93E33</color>
-    <color name="color12">#AB3D3D</color>
-    <color name="color13">#31B7B3</color>
-    <color name="color14">#AF0072</color>
-    <color name="color15">#A6F556</color>
-    <color name="color16">#FFF182</color>
-    <color name="color17">#E8C62E</color>
-    <color name="color18">#74C0FF</color>
-    <color name="color19">#1BFFE5</color>
-    <color name="color20">#D900FF</color>
-
-
+    <!-- Semantic tokens used by layouts, styles, and Java. -->
+    <color name="surface_canvas">@color/stone_50</color>
+    <color name="surface_panel">@color/paper</color>
+    <color name="surface_variant">@color/stone_100</color>
+    <color name="surface_dim">@color/stone_200</color>
+    <color name="surface_bright">@color/paper</color>
+    <color name="surface_container_lowest">@color/paper</color>
+    <color name="surface_container_low">#F2EDE7</color>
+    <color name="surface_container">#ECE7E0</color>
+    <color name="surface_container_high">#E7E1D9</color>
+    <color name="surface_container_highest">#E1DBD2</color>
+    <color name="surface_inverse">@color/inverse_ink</color>
+    <color name="text_primary">@color/stone_900</color>
+    <color name="text_secondary">@color/stone_600</color>
+    <color name="text_inverse">@color/stone_50</color>
+    <color name="accent">@color/indigo_600</color>
+    <color name="on_accent">@color/paper</color>
+    <color name="accent_inverse">#B9B2FF</color>
+    <color name="accent_container">@color/indigo_50</color>
+    <color name="on_accent_container">@color/indigo_900</color>
+    <color name="outline_interactive">@color/stone_400</color>
+    <color name="divider">@color/stone_200</color>
+    <color name="danger">@color/red_700</color>
+    <color name="on_danger">@color/paper</color>
 </resources>

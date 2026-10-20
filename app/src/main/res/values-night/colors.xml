@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark replacements for the same semantic names. -->
+    <color name="surface_canvas">#121110</color>
+    <color name="surface_panel">#1D1B19</color>
+    <color name="surface_variant">#2A2724</color>
+    <color name="surface_dim">#121110</color>
+    <color name="surface_bright">#3A3631</color>
+    <color name="surface_container_lowest">#0C0B0A</color>
+    <color name="surface_container_low">#1A1816</color>
+    <color name="surface_container">#1D1B19</color>
+    <color name="surface_container_high">#282522</color>
+    <color name="surface_container_highest">#332F2B</color>
+    <color name="surface_inverse">#F2EEE8</color>
+    <color name="text_primary">#F2EEE8</color>
+    <color name="text_secondary">#B7B0A6</color>
+    <color name="text_inverse">#1B1A17</color>
+    <color name="accent">#B9B2FF</color>
+    <color name="on_accent">#221C5C</color>
+    <color name="accent_inverse">#4F46B8</color>
+    <color name="accent_container">#332C6B</color>
+    <color name="on_accent_container">#E8E3FF</color>
+    <color name="outline_interactive">#777067</color>
+    <color name="divider">#3A3530</color>
+    <color name="danger">#F2B8B5</color>
+    <color name="on_danger">#601410</color>
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="space_1">4dp</dimen>
+    <dimen name="space_2">8dp</dimen>
+    <dimen name="space_3">12dp</dimen>
+    <dimen name="space_4">16dp</dimen>
+    <dimen name="space_6">24dp</dimen>
+    <dimen name="space_8">32dp</dimen>
+    <dimen name="space_12">48dp</dimen>
+    <dimen name="space_16">64dp</dimen>
+
+    <dimen name="screen_margin">@dimen/space_4</dimen>
+    <dimen name="top_bar_height">@dimen/space_16</dimen>
+    <dimen name="grid_outer_padding">10dp</dimen>
+    <dimen name="grid_item_margin">6dp</dimen>
+    <dimen name="list_bottom_padding">96dp</dimen>
+    <dimen name="fab_margin">@dimen/space_4</dimen>
+    <dimen name="search_corner_radius">28dp</dimen>
+    <dimen name="search_height">56dp</dimen>
+    <dimen name="card_corner_radius">@dimen/space_4</dimen>
+    <dimen name="card_padding">@dimen/space_4</dimen>
+    <dimen name="card_min_height">120dp</dimen>
+    <dimen name="card_stroke_width">1dp</dimen>
+    <dimen name="card_stroke_width_pinned">2dp</dimen>
+    <dimen name="pin_icon_size">14dp</dimen>
+    <dimen name="icon_size">24dp</dimen>
+    <dimen name="overflow_size">@dimen/space_12</dimen>
+    <dimen name="empty_icon_size">96dp</dimen>
+    <dimen name="empty_copy_max_width">320dp</dimen>
+    <dimen name="editor_toolbar_height">@dimen/space_16</dimen>
+    <dimen name="editor_horizontal_padding">20dp</dimen>
+    <dimen name="editor_bottom_padding">@dimen/space_8</dimen>
+    <dimen name="editor_title_min_height">56dp</dimen>
+    <dimen name="editor_body_min_height">240dp</dimen>
+    <dimen name="progress_size">40dp</dimen>
+</resources>

@@ -35,6 +35,7 @@ dependencies {
 
     implementation(libs.appcompat)
     implementation(libs.material)
+    implementation(libs.recyclerview)
     implementation(libs.room.common)
     implementation(libs.room.runtime)
     testImplementation(libs.junit)

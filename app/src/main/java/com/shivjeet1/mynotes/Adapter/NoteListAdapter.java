@@ -1,115 +1,179 @@
 package com.shivjeet1.mynotes.Adapter;
 
 import android.content.Context;
-import android.provider.ContactsContract;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-
+import com.google.android.material.card.MaterialCardView;
 import com.shivjeet1.mynotes.Interface.NotesClickListener;
 import com.shivjeet1.mynotes.Model.Notes;
 import com.shivjeet1.mynotes.R;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
 
-public class NoteListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
-    Context context;
-    List<Notes> notesList;
-    NotesClickListener listener;
+public class NoteListAdapter extends ListAdapter<Notes, NoteListAdapter.NotesViewHolder> {
 
-    public NoteListAdapter(Context context, List<Notes> notesList, NotesClickListener listener) {
+    private static final String DATE_TIME_PATTERN = "d MMM yyyy, HH:mm";
+    private static final String LEGACY_DATE_PATTERN = "EEE, d MMM yyyy HH:mm a";
+    private static final String DATE_PATTERN = "d MMM yyyy";
+
+    private static final DiffUtil.ItemCallback<Notes> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<Notes>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull Notes oldItem, @NonNull Notes newItem) {
+                    return oldItem.getID() == newItem.getID();
+                }
+
+                @Override
+                public boolean areContentsTheSame(@NonNull Notes oldItem, @NonNull Notes newItem) {
+                    return TextUtils.equals(oldItem.getTitle(), newItem.getTitle())
+                            && TextUtils.equals(oldItem.getNotes(), newItem.getNotes())
+                            && TextUtils.equals(oldItem.getDate(), newItem.getDate())
+                            && Objects.equals(oldItem.getPinned(), newItem.getPinned());
+                }
+            };
+
+    private final Context context;
+    private final NotesClickListener listener;
+
+    public NoteListAdapter(Context context, NotesClickListener listener) {
+        super(DIFF_CALLBACK);
         this.context = context;
-        this.notesList = notesList;
         this.listener = listener;
+        setHasStableIds(true);
     }
 
     @NonNull
     @Override
     public NotesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new NotesViewHolder(LayoutInflater.from(context).inflate(R.layout.note_list,parent,false));
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.note_list, parent, false);
+        NotesViewHolder holder = new NotesViewHolder(view);
+
+        holder.itemView.setOnClickListener(itemView -> {
+            int position = holder.getBindingAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onClick(getItem(position));
+            }
+        });
+        holder.itemView.setOnLongClickListener(itemView -> {
+            int position = holder.getBindingAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onLongPress(getItem(position), holder.moreBtn);
+            }
+            return true;
+        });
+        holder.moreBtn.setOnClickListener(button -> {
+            int position = holder.getBindingAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onLongPress(getItem(position), holder.moreBtn);
+            }
+        });
+
+        ViewCompat.addAccessibilityAction(holder.itemView,
+                context.getString(R.string.pin_toggle), (view1, arguments) -> {
+                    int position = holder.getBindingAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onTogglePin(getItem(position));
+                    }
+                    return true;
+                });
+        ViewCompat.addAccessibilityAction(holder.itemView,
+                context.getString(R.string.delete_note), (view1, arguments) -> {
+                    int position = holder.getBindingAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onDelete(getItem(position));
+                    }
+                    return true;
+                });
+
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
-     holder.titleTxt.setText(notesList.get(position).getTitle());
-     holder.notesTxt.setText(notesList.get(position).getNotes());
-     holder.dateTxt.setText(notesList.get(position).getDate());
-     holder.dateTxt.setSelected(true);
+        Notes note = getItem(position);
+        boolean pinned = Boolean.TRUE.equals(note.getPinned());
 
-     if (notesList.get(position).getPinned() == true){
-         holder.imageView.setImageResource(R.drawable.pin);
-     }else {
-         holder.imageView.setImageResource(0);
-      }
+        String title = note.getTitle();
+        holder.titleTxt.setText(TextUtils.isEmpty(title)
+                ? context.getString(R.string.untitled)
+                : title);
+        holder.notesTxt.setText(note.getNotes());
 
-     int color_code = getRandomColor();
-     holder.cardView.setCardBackgroundColor(holder.itemView.getResources().getColor(color_code));
+        String date = note.getDate();
+        holder.dateTxt.setText(TextUtils.isEmpty(date)
+                ? context.getString(R.string.no_date)
+                : formatCardDate(date));
 
-     holder.cardView.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-           listener.onClick(notesList.get(holder.getAdapterPosition()));
-         }
-     });
-
-     holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-         @Override
-         public boolean onLongClick(View view) {
-             listener.onLongPress(notesList.get(holder.getAdapterPosition()),holder.cardView);
-             return true;
-         }
-     });
-    }
-
-    private int getRandomColor(){
-        List<Integer> colorCode = new ArrayList<>();
-        colorCode.add(R.color.color1);
-        colorCode.add(R.color.color2);
-        colorCode.add(R.color.color3);
-        colorCode.add(R.color.color4);
-        colorCode.add(R.color.color5);
-        colorCode.add(R.color.color6);
-        colorCode.add(R.color.color7);
-        colorCode.add(R.color.color8);
-        colorCode.add(R.color.color9);
-
-        Random random = new Random();
-        int random_color = random.nextInt(colorCode.size());
-        return colorCode.get(random_color);
-
+        holder.cardView.setStrokeColor(ContextCompat.getColorStateList(context,
+                pinned ? R.color.card_stroke_pinned : R.color.card_stroke));
+        holder.cardView.setStrokeWidth(context.getResources().getDimensionPixelSize(
+                pinned ? R.dimen.card_stroke_width_pinned : R.dimen.card_stroke_width));
+        holder.pinnedIcon.setVisibility(pinned ? View.VISIBLE : View.GONE);
+        holder.pinnedIcon.setContentDescription(
+                pinned ? context.getString(R.string.pinned) : null);
     }
 
     @Override
-    public int getItemCount() {
-        return notesList.size();
+    public long getItemId(int position) {
+        return getItem(position).getID();
     }
 
-    public void filterList(List<Notes> filterList){
-        notesList=filterList;
-        notifyDataSetChanged();
+    /**
+     * Cards have room for a date, not a full timestamp. Older builds stored a
+     * long timestamp; parse the known formats and fall back to the raw value if
+     * the data came from a different locale or an unknown format.
+     */
+    private String formatCardDate(String raw) {
+        String[] patterns = {DATE_TIME_PATTERN, LEGACY_DATE_PATTERN, DATE_PATTERN};
+        for (String pattern : patterns) {
+            try {
+                SimpleDateFormat parser = new SimpleDateFormat(pattern, Locale.getDefault());
+                parser.setLenient(false);
+                Date parsed = parser.parse(raw);
+                if (parsed != null) {
+                    return new SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(parsed);
+                }
+            } catch (ParseException ignored) {
+                // Try the next known format.
+            }
+        }
+        return raw;
     }
-}
 
+    static class NotesViewHolder extends RecyclerView.ViewHolder {
+        final MaterialCardView cardView;
+        final TextView titleTxt;
+        final TextView notesTxt;
+        final TextView dateTxt;
+        final ImageView pinnedIcon;
+        final ImageButton moreBtn;
 
-class NotesViewHolder extends RecyclerView.ViewHolder{
-    CardView cardView;
-    TextView notesTxt,titleTxt,dateTxt;
-    ImageView imageView;
-    public NotesViewHolder(@NonNull View itemView) {
-        super(itemView);
-        cardView = itemView.findViewById(R.id.note_container);
-        notesTxt = itemView.findViewById(R.id.notesTxt);
-        titleTxt = itemView.findViewById(R.id.titleTxt);
-        dateTxt = itemView.findViewById(R.id.dateTxt);
-        imageView = itemView.findViewById(R.id.pinned);
+        NotesViewHolder(@NonNull View itemView) {
+            super(itemView);
+            cardView = itemView.findViewById(R.id.note_container);
+            titleTxt = itemView.findViewById(R.id.titleTxt);
+            notesTxt = itemView.findViewById(R.id.notesTxt);
+            dateTxt = itemView.findViewById(R.id.dateTxt);
+            pinnedIcon = itemView.findViewById(R.id.pinned);
+            moreBtn = itemView.findViewById(R.id.moreBtn);
+        }
     }
 }

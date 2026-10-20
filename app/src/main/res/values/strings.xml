@@ -1,3 +1,58 @@
 <resources>
-    <string name="app_name">MyNotes</string>
+    <string name="app_name">My Notes</string>
+    <string name="page_title">My Notes</string>
+    <string name="search_notes">Search notes</string>
+    <string name="clear_search">Clear search</string>
+
+    <plurals name="note_count">
+        <item quantity="one">%1$d note</item>
+        <item quantity="other">%1$d notes</item>
+    </plurals>
+    <plurals name="note_count_filtered">
+        <item quantity="one">%1$d of %2$d note</item>
+        <item quantity="other">%1$d of %2$d notes</item>
+    </plurals>
+
+    <string name="new_note">New note</string>
+    <string name="edit_note">Edit note</string>
+    <string name="create_first_note">Create first note</string>
+    <string name="empty_title">No notes yet</string>
+    <string name="empty_message">Capture a thought before it slips away.</string>
+    <string name="search_empty_title">No notes match “%1$s”</string>
+    <string name="search_empty_message">Try a different word, or clear the search.</string>
+
+    <string name="loading_notes">Loading notes…</string>
+    <string name="error_title">Couldn’t load notes</string>
+    <string name="error_message">Your notes are still on this device. Try again.</string>
+    <string name="retry">Retry</string>
+
+    <string name="note_actions">Note actions</string>
+    <string name="pin_note">Pin note</string>
+    <string name="unpin_note">Unpin note</string>
+    <string name="pin_toggle">Pin or unpin note</string>
+    <string name="delete_note">Delete note</string>
+    <string name="pinned">Pinned</string>
+    <string name="untitled">Untitled</string>
+    <string name="no_date">No date</string>
+
+    <string name="note_deleted">Note deleted</string>
+    <string name="note_saved">Note saved</string>
+    <string name="save_failed">Couldn’t save note</string>
+    <string name="delete_failed">Couldn’t delete note</string>
+    <string name="pin_failed">Couldn’t update pin</string>
+    <string name="pinned_feedback">Pinned</string>
+    <string name="unpinned_feedback">Unpinned</string>
+    <string name="undo">Undo</string>
+
+    <string name="navigate_up">Navigate up</string>
+    <string name="save">Save</string>
+    <string name="title_hint">Title</string>
+    <string name="body_hint">Start writing…</string>
+    <string name="edited">Edited %1$s</string>
+    <string name="body_required">Add some text before saving.</string>
+
+    <string name="discard_title">Discard changes?</string>
+    <string name="discard_message">Your edits to this note will be lost.</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="discard">Discard</string>
 </resources>

@@ -1,65 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
     tools:context=".MainActivity">
+
     <LinearLayout
-       android:id="@+id/navLL"
+        android:id="@+id/listRoot"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="My Notes"
-            android:textColor="@color/purple"
-            android:textSize="35sp"
-            android:fontFamily="sans-serif-black"
-            android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="12dp"/>
-
-    </LinearLayout>
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/searchViewCard"
-        android:layout_margin="10dp"
-        app:cardCornerRadius="20dp"
-        android:layout_below="@+id/navLL">
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchView"
+        <LinearLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="68dp"
-            android:background="#906FD6"
-            app:iconifiedByDefault="false"
-            app:queryHint="Search Notes" />
-    </androidx.cardview.widget.CardView>
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/top_bar_height"
+            android:orientation="horizontal"
+            android:baselineAligned="true"
+            android:paddingStart="@dimen/screen_margin"
+            android:paddingTop="@dimen/space_4"
+            android:paddingEnd="@dimen/screen_margin"
+            android:paddingBottom="@dimen/space_2">
 
+            <TextView
+                android:id="@+id/pageTitle"
+                style="@style/TextAppearance.MyNotes.Headline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/page_title" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/noteRv"
-        android:layout_width="400dp"
-        android:layout_height="561dp"
-        android:layout_below="@+id/searchViewCard"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginVertical="8dp"
-        android:layout_marginTop="11dp" />
+            <TextView
+                android:id="@+id/noteCount"
+                style="@style/TextAppearance.MyNotes.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="12 notes" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/searchField"
+            style="@style/Widget.MyNotes.Search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/screen_margin"
+            android:layout_marginEnd="@dimen/screen_margin"
+            android:layout_marginBottom="@dimen/space_3">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/searchInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/search_notes"
+                android:imeOptions="actionSearch"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.MyNotes.Body"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <FrameLayout
+            android:id="@+id/contentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/noteRv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingStart="@dimen/grid_outer_padding"
+                android:paddingTop="@dimen/space_1"
+                android:paddingEnd="@dimen/grid_outer_padding"
+                android:paddingBottom="@dimen/list_bottom_padding"
+                android:scrollbars="none" />
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/emptyState"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:fillViewport="true"
+                android:scrollbars="none"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/space_8"
+                    android:paddingTop="@dimen/space_4"
+                    android:paddingEnd="@dimen/space_8"
+                    android:paddingBottom="@dimen/space_8">
+
+                    <ImageView
+                        android:id="@+id/emptyIcon"
+                        android:layout_width="@dimen/empty_icon_size"
+                        android:layout_height="@dimen/empty_icon_size"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_note_24"
+                        app:tint="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/emptyTitle"
+                        style="@style/TextAppearance.MyNotes.TitleLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_6"
+                        android:gravity="center"
+                        android:text="@string/empty_title" />
+
+                    <TextView
+                        android:id="@+id/emptyMessage"
+                        style="@style/TextAppearance.MyNotes.BodySmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_2"
+                        android:gravity="center"
+                        android:maxWidth="@dimen/empty_copy_max_width"
+                        android:text="@string/empty_message" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/emptyAction"
+                        style="@style/Widget.MyNotes.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_6"
+                        android:text="@string/create_first_note" />
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <LinearLayout
+                android:id="@+id/loadingState"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    app:indicatorColor="@color/accent"
+                    app:indicatorSize="@dimen/progress_size"
+                    app:trackColor="@color/surface_variant" />
+
+                <TextView
+                    style="@style/TextAppearance.MyNotes.BodySmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_4"
+                    android:text="@string/loading_notes" />
+            </LinearLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/errorState"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:fillViewport="true"
+                android:scrollbars="none"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/space_8"
+                    android:paddingTop="@dimen/space_4"
+                    android:paddingEnd="@dimen/space_8"
+                    android:paddingBottom="@dimen/space_4">
+
+                    <TextView
+                        android:id="@+id/errorTitle"
+                        style="@style/TextAppearance.MyNotes.TitleLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:accessibilityLiveRegion="polite"
+                        android:gravity="center"
+                        android:text="@string/error_title" />
+
+                    <TextView
+                        style="@style/TextAppearance.MyNotes.BodySmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_2"
+                        android:gravity="center"
+                        android:maxWidth="@dimen/empty_copy_max_width"
+                        android:text="@string/error_message" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/retryButton"
+                        style="@style/Widget.MyNotes.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_6"
+                        android:text="@string/retry" />
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+        </FrameLayout>
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addBtn"
+        style="@style/Widget.MyNotes.Fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="24dp"
-        android:backgroundTint="@color/purple"
-        android:src="@drawable/baseline_add_24"
-        />
-</RelativeLayout>
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:contentDescription="@string/new_note"
+        android:src="@drawable/ic_add_24"
+        app:maxImageSize="@dimen/icon_size" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

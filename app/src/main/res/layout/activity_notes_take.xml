@@ -1,62 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/black"
     tools:context=".NotesTakeActivity">
 
-    <RelativeLayout
-        android:id="@+id/navLL"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.MyNotes.Toolbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="My Notes"
-            android:textColor="@color/purple"
-            android:textSize="40sp"
-            android:fontFamily="sans-serif-black"
-            android:layout_marginHorizontal="30dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="12dp"/>
-        <ImageView
-            android:id="@+id/savebtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/turned_in"
-            android:outlineSpotShadowColor="@color/white"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginHorizontal="25dp"/>
-    </RelativeLayout>
+            android:minHeight="@dimen/editor_toolbar_height"
+            app:navigationContentDescription="@string/navigate_up"
+            app:navigationIcon="@drawable/ic_arrow_back_24"
+            app:title="@string/new_note" />
 
-    <EditText
-        android:id="@+id/titleEdt"
-        android:layout_width="match_parent"
-        android:layout_height="74dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="30dp"
-        android:hint="Title"
-        android:singleLine="true"
-        android:textColor="@color/white"
-        android:textColorHint="#BDBCBC"
-        android:textSize="26sp" />
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/editorScroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:fillViewport="true">
 
-    <EditText
-        android:id="@+id/noteEdt"
-        android:layout_width="match_parent"
-        android:layout_height="231dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="20dp"
-        android:hint="Add Notes"
-        android:textColor="@color/white"
-        android:textColorHint="#BDBCBC"
-        android:textSize="20sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/editor_horizontal_padding"
+                android:paddingTop="@dimen/space_4"
+                android:paddingEnd="@dimen/editor_horizontal_padding"
+                android:paddingBottom="@dimen/editor_bottom_padding">
 
-</LinearLayout>
+                <EditText
+                    android:id="@+id/titleEdt"
+                    style="@style/TextAppearance.MyNotes.EditorTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:gravity="top|start"
+                    android:hint="@string/title_hint"
+                    android:imeOptions="actionNext"
+                    android:importantForAutofill="no"
+                    android:inputType="textCapSentences"
+                    android:maxLines="2"
+                    android:minHeight="@dimen/editor_title_min_height"
+                    android:padding="0dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:layout_marginBottom="@dimen/space_3"
+                    android:background="@color/divider"
+                    android:importantForAccessibility="no" />
+
+                <EditText
+                    android:id="@+id/noteEdt"
+                    style="@style/TextAppearance.MyNotes.EditorBody"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:gravity="top|start"
+                    android:hint="@string/body_hint"
+                    android:importantForAutofill="no"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:minHeight="@dimen/editor_body_min_height"
+                    android:padding="0dp"
+                    android:scrollbars="none"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary" />
+
+                <TextView
+                    android:id="@+id/bodyError"
+                    style="@style/TextAppearance.MyNotes.BodySmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:accessibilityLiveRegion="polite"
+                    android:text="@string/body_required"
+                    android:textColor="@color/danger"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/editorMeta"
+                    style="@style/TextAppearance.MyNotes.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_6"
+                    android:visibility="gone"
+                    tools:text="Edited 20 Oct 2026, 20:42" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

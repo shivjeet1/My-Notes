@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="screen_margin">@dimen/space_8</dimen>
+    <dimen name="grid_outer_padding">26dp</dimen>
+    <dimen name="editor_horizontal_padding">120dp</dimen>
+</resources>

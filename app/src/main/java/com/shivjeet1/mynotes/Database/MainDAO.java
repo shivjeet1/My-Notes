@@ -16,11 +16,11 @@ public interface MainDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Notes note);
-    @Query("SELECT * FROM notes ORDER BY id DESC")
+    @Query("SELECT * FROM notes ORDER BY pinned DESC, id DESC")
     List<Notes> getAll();
 
-    @Query("UPDATE notes SET title = :title,note = :notes WHERE ID = :id")
-    void update(int id,String title,String notes);
+    @Query("UPDATE notes SET title = :title, note = :notes, date = :date WHERE ID = :id")
+    void update(int id, String title, String notes, String date);
 
     @Delete
     void delete(Notes notes);
