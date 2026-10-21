@@ -110,6 +110,9 @@ bundle: local-properties ## Build the unsigned release App Bundle
 test: local-properties ## Run JVM unit tests
 	@$(GRADLEW) test
 
+connected-test: local-properties ## Run instrumented tests on the connected device or emulator
+	@$(GRADLEW) connectedDebugAndroidTest
+
 lint: local-properties ## Run Android lint and print the report path
 	@$(GRADLEW) lintDebug
 	@printf '  Report: %s\n' "$(LINT_REPORT)"
@@ -199,4 +202,4 @@ doctor: ## Check JDK, SDK packages, adb, and local.properties
 
 # ---------------------------------------------------------------------------
 .PHONY: help setup sdk-bootstrap sdk local-properties debug release bundle \
-        test lint install run uninstall devices logcat clean doctor
+        test connected-test lint install run uninstall devices logcat clean doctor

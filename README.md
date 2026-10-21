@@ -1,23 +1,38 @@
 # My Notes
 
-**My Notes** is a lightweight, offline-first Android note-taking app written in Java with the native Android SDK. Notes are stored locally with Room, so the app works without an account, a network connection, or a cloud service.
+**My Notes** is a lightweight, offline-first Android app for notes and tasks, written in Java with the native Android SDK. Notes, tasks, due dates, and reminders are stored locally with Room, so the app works without an account, a network connection, or a cloud service.
 
-The project is intentionally small: it is a practical reference for Android fundamentals (activities, XML layouts, RecyclerView, Room, and Material components) and a usable personal notes app.
+The project is intentionally small: it is a practical reference for Android fundamentals (activities, fragments, XML layouts, RecyclerView, Room, Material components, and AlarmManager) and a usable personal productivity app.
 
 ---
 
 ## Features
+
+### Notes
 
 - **Create notes** with an optional title and a body; blank bodies are blocked and titles fall back to “Untitled”.
 - **Edit existing notes** by tapping a card, with unsaved-changes protection on back.
 - **Search** titles and bodies with a short debounce, a clear affordance, result counts, and a dedicated no-results state.
 - **Pin, unpin, and delete** from each card’s overflow menu or long press. Pinned notes sort first, deletes can be undone from the Snackbar, and pin changes are announced.
 - **Explicit states** for loading, empty, search-empty, error, and content, with a scrollable empty state that survives large font scales.
-- **Local persistence** with Room — no account and no network required.
-- **Material 3 light/dark theme** built from semantic colour, type, spacing, and component tokens. The interface uses warm neutrals and one indigo accent, not random card colours.
-- **Responsive layout** with a 2/3/4-column staggered grid, tablet-aware editor margins, and edge-to-edge system bar/IME handling on API 30+.
 
-> The UI/UX implementation is complete through the build-and-test phase. On-device visual and TalkBack validation is still pending because no emulator or physical device was attached during implementation. See [`docs/UI_UX_PLAN.md`](docs/UI_UX_PLAN.md) for the design rationale and validation protocol.
+### Tasks
+
+- **Create and edit tasks** with a title, optional details, a due date/time, and an optional reminder.
+- **Reminder offsets** include none, at due time, 5/15/30 minutes, 1 hour, and 1 day before. A configurable default reminder is applied when a new task first gets a due date.
+- **Filter by All, Today, Upcoming, or Done.** Today includes overdue tasks; Upcoming starts tomorrow. The subtitle shows the count for the active filter.
+- **Complete tasks** with the round check button. Completed tasks get a strikethrough and move to the Done filter. Deleting from the list offers Snackbar Undo; deleting from the editor asks for confirmation.
+- **Reminder delivery** uses exact alarms when the user grants the special alarm permission, with an inexact fallback otherwise. Reminders survive a reboot/package update, are canceled when a task is completed or deleted, and open the task editor when tapped.
+
+### App
+
+- **Local persistence** with Room — no account and no network required.
+- **Material 3 light/dark theme** built from semantic colour, type, spacing, and component tokens. Choose System, Light, or Dark in Settings, or use the app-bar theme action to pin light/dark.
+- **Settings** for appearance, notification permission, exact-alarm access, default reminder, and backup/restore. About shows the app version and local note/task counts.
+- **Backup and restore** through the system file picker. Backups are human-readable `notes-backup.json` files containing both notes and tasks; restore supports Merge or Replace.
+- **Responsive layout**: a bottom navigation bar on phones and a navigation rail on tablets/foldables, a 2/3/4-column note grid, a 720dp content cap for Tasks/Settings, and tablet-aware editor margins. System bars and the IME are handled edge-to-edge on API 30+.
+
+> The interface has been validated on an Android 14 emulator at phone and tablet widths, in light and dark themes, and at 200% font scale. Interactive controls include content descriptions and 48dp touch targets. See [`docs/UI_UX_PLAN.md`](docs/UI_UX_PLAN.md) for the design rationale and validation protocol.
 
 ---
 
@@ -30,7 +45,7 @@ The project is intentionally small: it is a practical reference for Android fund
   <img src="static/mynotes/ui-demo4.jpg" width="45%" alt="Pre-refactor search results filtered by a query" />
 </p>
 
-> These are **archived pre-refactor screenshots**. The current build uses the quiet-paper design system, adaptive cards, explicit states, and the editor toolbar described below. New after screenshots will be captured during on-device validation, when a device or emulator is available.
+> These are **archived pre-refactor screenshots**. The current build adds the tabbed Notes/Tasks shell, navigation rail, task editor, reminders, Settings, and the backup/restore flow described below.
 
 ---
 
@@ -40,26 +55,51 @@ The project is intentionally small: it is a practical reference for Android fund
 My-Notes/
 ├── app/
 │   ├── build.gradle.kts
-│   └── src/main/
-│       ├── AndroidManifest.xml
-│       ├── java/com/shivjeet1/mynotes/
-│       │   ├── MainActivity.java              ← List, search, states, pin/delete/undo
-│       │   ├── NotesTakeActivity.java         ← Create/edit, dirty check, save validation
-│       │   ├── Adapter/NoteListAdapter.java   ← ListAdapter/DiffUtil and card actions
-│       │   ├── Database/MainDAO.java          ← Room queries and pinned ordering
-│       │   ├── Database/RoomDb.java           ← Room database instance
-│       │   ├── Interface/NotesClickListener.java
-│       │   ├── Model/Notes.java               ← Note entity
-│       │   └── util/WindowInsetsHelper.java   ← System bar, cutout, and IME insets
-│       └── res/
-│           ├── color/                         ← Stateful stroke and disabled-text selectors
-│           ├── layout/                        ← List, editor, note card
-│           ├── menu/                          ← Overflow and editor actions
-│           ├── values/                        ← Tokens, themes, dimensions, strings
-│           ├── values-night/                  ← Dark semantic colours and status bar theme
-│           ├── values-sw600dp/                ← Tablet spacing and 3-column grid
-│           ├── values-sw840dp/                ← Wide-tablet spacing and 4-column grid
-│           └── values-land/                   ← Landscape grid
+│   ├── schemas/                               ← Exported Room schemas (versions 2 and 3)
+│   ├── src/main/
+│   │   ├── AndroidManifest.xml
+│   │   ├── java/com/shivjeet1/mynotes/
+│   │   │   ├── MainActivity.java              ← Thin shell: tab host, bottom bar/rail
+│   │   │   ├── NotesFragment.java             ← Notes list, search, states, pin/delete/undo
+│   │   │   ├── TasksFragment.java             ← Task filters, complete/delete/undo
+│   │   │   ├── NotesTakeActivity.java         ← Note editor, dirty check, save validation
+│   │   │   ├── TaskEditorActivity.java        ← Due date/time, reminders, done, delete
+│   │   │   ├── SettingsActivity.java          ← Theme, reminders, counts, backup/restore
+│   │   │   ├── NotesApplication.java          ← Theme bootstrap and notification channel
+│   │   │   ├── Adapter/
+│   │   │   │   ├── NoteListAdapter.java
+│   │   │   │   └── TaskListAdapter.java
+│   │   │   ├── Database/
+│   │   │   │   ├── MainDAO.java
+│   │   │   │   ├── TaskDao.java
+│   │   │   │   └── RoomDb.java                ← Room v3 + MIGRATION_2_3
+│   │   │   ├── Model/
+│   │   │   │   ├── Notes.java
+│   │   │   │   └── Task.java
+│   │   │   ├── receiver/
+│   │   │   │   ├── ReminderReceiver.java      ← Notification posting, fired state
+│   │   │   │   └── BootReceiver.java          ← Reschedule after boot/update
+│   │   │   └── util/
+│   │   │       ├── AppBarActions.java
+│   │   │       ├── AppPreferences.java
+│   │   │       ├── BackupManager.java         ← notes-backup.json reader/writer
+│   │   │       ├── DirtyStateController.java
+│   │   │       ├── MaxWidthLinearLayout.java
+│   │   │       ├── ReminderScheduler.java
+│   │   │       ├── TaskDates.java
+│   │   │       └── WindowInsetsHelper.java
+│   │   └── res/
+│   │       ├── color/                         ← Stateful stroke, nav, and disabled-text selectors
+│   │       ├── drawable/                      ← Theme, task, reminder, and navigation icons
+│   │       ├── layout/                        ← Shell, notes, tasks, settings, editors, cards
+│   │       ├── layout-sw600dp/                ← Tablet navigation-rail shell
+│   │       ├── menu/                          ← Navigation, overflow, editor actions
+│   │       ├── values/                        ← Tokens, themes, dimensions, strings
+│   │       ├── values-night/                  ← Dark semantic colours and system bar theme
+│   │       ├── values-sw600dp/                ← Tablet spacing and 3-column grid
+│   │       ├── values-sw840dp/                ← Wide-tablet spacing and 4-column grid
+│   │       └── values-land/                   ← Landscape grid
+│   └── src/androidTest/                       ← Room migration, DAO, and backup tests
 ├── docs/UI_UX_PLAN.md                         ← Design plan, decisions, validation protocol
 ├── static/mynotes/                            ← Archived pre-refactor screenshots
 ├── gradle/libs.versions.toml                  ← Dependency versions
@@ -218,9 +258,12 @@ Run `make help` for the full list.
 | `make install` | Install the debug APK on the connected device |
 | `make run` | Install and launch the app |
 | `make test` | Run JVM unit tests |
+| `make connected-test` | Run instrumented Room/backup tests on a device or emulator |
 | `make lint` | Run Android lint |
 | `make release` | Build the unsigned release APK |
 | `make bundle` | Build the unsigned release App Bundle |
+| `make uninstall` | Uninstall the app from the connected device |
+| `make logcat` | Stream device logcat |
 | `make clean` | Delete Gradle build outputs |
 
 Override toolchain paths on the command line:
@@ -230,6 +273,51 @@ make debug JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 make install ANDROID_HOME=/path/to/android-sdk
 make local-properties FORCE=1
 ```
+
+---
+
+## Tasks, reminders, and backup
+
+### Reminder behaviour
+
+- A reminder is optional. Without a due date, reminder chips are disabled; clearing the due date also clears the reminder.
+- On Android 13+, choosing a reminder asks for notification permission at that moment. If permission is denied, the editor shows a warning with a shortcut to system notification settings.
+- On Android 12+, exact alarms require the **Alarms & reminders** special access. Settings → Reminders → **Precise timing** opens the grant screen. Without it, the app falls back to an inexact alarm automatically.
+- Reminders are rescheduled after a reboot and after an app update. Completing or deleting a task cancels its pending alarm; undo restores a future reminder.
+- The notification opens the task editor. The notification channel is created by `NotesApplication`, and the receiver records that the reminder fired so it is not posted twice.
+- Settings → **Default reminder** can be **No reminder** or one of the supported offsets. It applies only when a new task first receives a due date; editing an existing task keeps its reminder unless you change it.
+
+### Backup format
+
+Settings → Data → **Back up data** writes `notes-backup.json` through the system file picker. **Restore data** validates the file, shows the note/task counts, and offers:
+
+- **Merge** — adds the backup's notes and tasks, assigning new local IDs.
+- **Replace** — deletes local notes/tasks first and then restores the backup.
+
+Both paths preserve task due dates, reminder times, completed state, and reminder-fired state. Restore cancels stale alarms, reschedules reminders for the restored tasks, and tells the tab screens to reload. The format is UTF-8 JSON with a version header:
+
+```json
+{
+  "format": "mynotes-backup",
+  "version": 1,
+  "exportedAt": "2026-10-22T06:30:00Z",
+  "counts": { "notes": 3, "tasks": 1 },
+  "notes": [
+    { "id": 1, "title": "Groceries", "note": "Milk and coffee", "date": "22 Oct 2026", "pinned": true }
+  ],
+  "tasks": [
+    { "id": 1, "title": "Call the dentist", "notes": "", "dueAt": 1792639800000,
+      "remindAt": 1792638900000, "reminderFired": false, "done": false,
+      "createdAt": 1792546000000, "completedAt": 0 }
+  ]
+}
+```
+
+Unknown formats and versions newer than the app supports are rejected with a readable error. Backups are manual; uninstalling the app clears its Room database, so export first if you need a portable copy.
+
+### Tablet and large-screen layout
+
+At `sw600dp` and above, `MainActivity` uses a `NavigationRailView` instead of the bottom bar, leaving the two destinations visible while the content pane keeps its own app bar and FAB. The Tasks and Settings content is capped at 720dp and centered; the task editor uses its existing responsive horizontal margins. The notes grid switches from two columns on phones to three at `sw600dp` and four at `sw840dp`.
 
 ---
 
@@ -295,13 +383,27 @@ Log out and back in after changing groups, then reconnect the USB cable. On some
 
 ### First launch shows an empty screen
 
-The empty state is intentional when Room has no notes. Tap **Create first note** or the **+** button to open the editor. If the spinner never resolves, check for a Room/database error:
+The empty state is intentional when Room has no data. Tap **Create first note** on the Notes tab, or open the Tasks tab and tap **Create your first task**, to open the relevant editor. If a spinner never resolves, check for a Room/database error:
 
 ```bash
-adb logcat -s MainActivity
+adb logcat -s NotesFragment TasksFragment SettingsActivity TaskEditorActivity
 ```
 
-The debug build logs database failures under the `MainActivity` tag.
+The debug build logs database failures under the fragment/activity tags.
+
+### Reminders do not appear
+
+1. Settings → Reminders → **Notifications** should say **Allowed**. If it says **Blocked**, tap it and enable notifications for My Notes.
+2. On Android 12+, Settings → Reminders → **Precise timing** should say **Exact alarms allowed** for on-time delivery. Otherwise the reminder still fires, but the system may delay it.
+3. Open the task and confirm the reminder is still set and the due time is in the future. Completing a task cancels its reminder on purpose.
+4. Check the alarm and notification state:
+
+```bash
+adb shell dumpsys alarm | grep -A4 'com.shivjeet1.mynotes.action.REMIND'
+adb shell dumpsys notification --noredact | grep -A8 'pkg=com.shivjeet1.mynotes'
+```
+
+If the app was force-stopped, Android may defer its alarms until the app is launched again; this is normal platform behaviour.
 
 ### Where are build outputs?
 
@@ -319,17 +421,26 @@ app/build/reports/lint-results-debug.html       # lint report
 | Area | Status |
 | :--- | :--- |
 | Semantic colour/type/spacing tokens and Material 3 light/dark themes | Implemented |
+| Tabbed Notes/Tasks shell, per-tab app bars, app-bar theme/settings actions | Implemented |
 | Adaptive note grid, search, loading/empty/search-empty/error states | Implemented |
 | Pin-first sorting, overflow menu, long press, delete undo, TalkBack announcements | Implemented |
-| Editor toolbar, save validation, dirty-state confirmation, edited-date metadata | Implemented |
+| Note editor toolbar, save validation, dirty-state confirmation, edited-date metadata | Implemented |
+| Task list filters/counts/states, complete toggle, delete undo, FAB | Implemented |
+| Task editor, due date/time, reminder chips, default reminder, done switch | Implemented |
+| Notification channel, exact/inexact alarms, boot/update rescheduling | Implemented |
+| Settings: theme, notifications, precise timing, default reminder, counts | Implemented |
+| Backup/restore: SAF, JSON format/version validation, Merge/Replace | Implemented |
+| Tablet navigation rail, 720dp Tasks/Settings content cap, responsive editor margins | Implemented |
 | Edge-to-edge system bars on API 30+, fitted windows below API 30, IME padding | Implemented |
-| `ListAdapter`/`DiffUtil`, stable IDs, saved scroll/search state | Implemented |
+| `ListAdapter`/`DiffUtil`, stable IDs, saved scroll/filter/search state | Implemented |
 | JVM tests and lint | Passing (`make test`, `make lint`) |
-| Device/emulator screenshots, TalkBack pass, 200% font scale, light/dark visual QA | Pending — no device attached |
+| Instrumented Room migration/DAO/backup tests | Passing (`make connected-test`, 14 tests on Android 14 emulator) |
+| Device validation | Android 14 emulator: phone + tablet widths, light/dark, 200% font, reminders end-to-end, boot rescheduling, settings/backup flows |
+| Manual TalkBack walkthrough on physical hardware | Recommended as a final hardware pass |
 
-Room keeps the existing `notes` schema and database version 2. The DAO now persists edited dates and sorts pinned notes first; destructive fallback migration was removed so a future schema change must ship a real migration rather than silently wiping notes.
+Room now has database version 3 with a `tasks` table. `MIGRATION_2_3` is a real, tested migration; destructive fallback remains disabled so future schema changes must ship a migration rather than silently wiping notes or tasks. Exported schemas are checked in under `app/schemas/`.
 
-See [`docs/UI_UX_PLAN.md`](docs/UI_UX_PLAN.md) for the audits, wireframes, component specs, file map, and the remaining validation checklist.
+See [`docs/UI_UX_PLAN.md`](docs/UI_UX_PLAN.md) for the audits, wireframes, component specs, file map, and the validation protocol.
 
 ---
 
@@ -341,6 +452,6 @@ See [`docs/UI_UX_PLAN.md`](docs/UI_UX_PLAN.md) for the audits, wireframes, compo
 
 ## Conclusion
 
-**My Notes** is a compact local-first Android project with a clear core: create and edit notes, search quickly, pin what matters, delete with undo, and keep everything on the device. The Java/XML codebase, Room storage, and command-line build workflow remain intact while the interface now has a coherent design system, explicit states, and accessibility-focused interactions.
+**My Notes** is a compact local-first Android project with a clear core: capture notes, search and pin what matters, track tasks with due dates and reminders, and keep everything on the device. The Java/XML codebase, Room storage, and command-line build workflow remain intact while the interface has a coherent design system, explicit states, responsive phone/tablet navigation, and accessibility-focused interactions.
 
-The remaining work is validation, not architecture: capture after screenshots, run TalkBack and large-font checks on hardware, and make any final spacing or contrast adjustments those checks reveal.
+The app now covers the full local loop: write, organize, schedule, get reminded, and export a portable JSON backup. Remaining work is optional hardware polish — a physical-device TalkBack walkthrough and OEM-specific reminder checks — not missing product functionality.

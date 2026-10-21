@@ -20,6 +20,7 @@ recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version
 room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
+room-testing = { group = "androidx.room", name = "room-testing", version.ref = "roomRuntime" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

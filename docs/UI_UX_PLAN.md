@@ -1,10 +1,10 @@
 # My Notes — UI/UX Refactoring & Optimization Plan
 
-**Status:** Implemented through Phase 6 — on-device visual and accessibility validation pending  
+**Status:** v1 redesign and v2 tasks/reminders/settings/backup implemented; core flows validated on an Android 14 emulator  
 **Scope:** The Android app in this repository (Java + XML, Material 3, minSdk 24, targetSdk 34)  
 **Skills applied:** `ui-ux-designer` (tokens, flows, component states, accessibility), `ui-visual-validator` (evidence-based visual QA), `taste-skill` / `design-taste-frontend` (design read, anti-slop direction, typography and layout discipline)
 
-> **Implementation note (October 2026).** The design system, list, state views, editor, pin sorting, delete undo, responsive dimensions, and conditional inset handling are implemented. The Room schema remains version 2; only DAO queries changed. `fallbackToDestructiveMigration()` was removed. RecyclerView `1.3.2` is an explicit dependency. API 30+ uses edge-to-edge with cutout/system-bar/IME padding; API 24–29 keeps fitted system windows because `adjustResize` is more reliable there. Pinned cards use a 2dp accent stroke plus the pin glyph instead of a full-height leading bar, which avoids a `match_parent` measurement trap inside a `wrap_content` card. The remaining work is the device screenshot, TalkBack, 200% font-scale, and light/dark validation described in §8; no device or emulator was attached during implementation.
+> **Implementation note (October 2026).** The v1 design system, list, state views, editor, pin sorting, delete undo, responsive dimensions, and conditional inset handling are implemented. The v2 increment adds the Notes/Tasks shell, task data and editor, due dates and reminders, Settings, and JSON backup/restore. Room is now version 3 with an exported schema and a tested `MIGRATION_2_3`; `fallbackToDestructiveMigration()` remains removed. API 30+ uses edge-to-edge with cutout/system-bar/IME padding; API 24–29 keeps fitted system windows because `adjustResize` is more reliable there. Validation covered phone and tablet widths, light/dark themes, 200% font scale, reminder delivery, boot rescheduling, and backup/restore on an Android 14 emulator. A physical-device TalkBack walkthrough remains the final optional hardware check.
 
 | Skill | Applied in this plan |
 | :--- | :--- |
@@ -40,7 +40,7 @@ The plan below turns this into a calm, content-first “quiet paper” experienc
 - **Do not migrate to Compose in this pass.** Keep Java + XML and the existing Room model. The refactor should be reviewable and shippable incrementally.
 - **Preserve the core flow:** open list → create/edit note → save → search/pin/delete.
 - **No new backend, account, or cloud dependency.** Local-first remains the product promise.
-- **Any Room schema change needs a migration.** The original `fallbackToDestructiveMigration()` silently wiped notes; it has been removed. The schema is still version 2, so no migration is required yet — but a future schema change must add one.
+- **Any Room schema change needs a migration.** The original `fallbackToDestructiveMigration()` silently wiped notes; it has been removed. The schema is now version 3 after the tasks table was added, with a tested 2→3 migration. Future schema changes must ship a migration too.
 
 ---
 
@@ -829,7 +829,7 @@ Do **not** rename `/static/mynotes/*` screenshots until the README is updated; k
 
 - Jetpack Compose migration.
 - Cloud sync, accounts, collaboration.
-- Rich text, attachments, audio notes, reminders.
+- Rich text, attachments, or audio notes. (Tasks and reminders were added in v2.)
 - Folders/tags/labels (revisit after the core list is stable).
 - Home-screen widgets or shortcuts.
 - Dynamic colour / Material You (custom palette is the brand; revisit later).
@@ -858,6 +858,11 @@ A release candidate is ready when:
 8. TalkBack can complete the core flows without unlabelled controls or duplicate focus.
 9. `lintDebug` has no new accessibility/hardcoded-text errors; the visual verification report is PASS.
 10. README screenshots and build instructions match the shipped app.
+11. The Notes/Tasks shell preserves state across tabs and has a tablet navigation rail.
+12. Tasks can be created, filtered, completed, edited, and deleted with Undo; due dates and reminders survive process death and reboot.
+13. Reminder notifications open the task editor; exact alarms fall back to inexact alarms when permission is unavailable.
+14. Settings controls theme, notification permission, exact-alarm access, and the default reminder, and shows local note/task counts.
+15. Backup/restore round-trips notes and tasks through `notes-backup.json` with Merge/Replace and validates format/version.
 
 ---
 
