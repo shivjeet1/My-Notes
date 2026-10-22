@@ -1,7 +1,6 @@
 package com.shivjeet1.mynotes;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,18 +8,14 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.activity.OnBackPressedCallback;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.shivjeet1.mynotes.Model.Notes;
+import com.shivjeet1.mynotes.util.DirtyStateController;
 import com.shivjeet1.mynotes.util.WindowInsetsHelper;
 
 import java.text.SimpleDateFormat;
@@ -81,17 +76,8 @@ public class NotesTakeActivity extends AppCompatActivity {
             titleEdt.requestFocus();
         }
 
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if (hasUnsavedChanges()) {
-                    showDiscardDialog();
-                } else {
-                    setEnabled(false);
-                    getOnBackPressedDispatcher().onBackPressed();
-                }
-            }
-        });
+        new DirtyStateController(this, R.string.discard_title, R.string.discard_message,
+                this::hasUnsavedChanges);
     }
 
     private void readExistingNote() {
@@ -149,22 +135,6 @@ public class NotesTakeActivity extends AppCompatActivity {
                     || !originalBody.equals(noteEdt.getText().toString());
         }
         return titleEdt.length() > 0 || noteEdt.length() > 0;
-    }
-
-    private void showDiscardDialog() {
-        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.discard_title)
-                .setMessage(R.string.discard_message)
-                .setNegativeButton(R.string.keep_editing, null)
-                .setPositiveButton(R.string.discard, (dismissed, which) -> finish())
-                .create();
-        dialog.setOnShowListener(ignored -> {
-            Button discard = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-            if (discard != null) {
-                discard.setTextColor(ContextCompat.getColor(this, R.color.danger));
-            }
-        });
-        dialog.show();
     }
 
     private void saveNote() {
