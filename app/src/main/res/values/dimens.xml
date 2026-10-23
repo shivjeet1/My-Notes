@@ -33,4 +33,19 @@
     <dimen name="editor_title_min_height">56dp</dimen>
     <dimen name="editor_body_min_height">240dp</dimen>
     <dimen name="progress_size">40dp</dimen>
+
+    <dimen name="settings_row_min_height">56dp</dimen>
+    <dimen name="settings_section_top_margin">@dimen/space_6</dimen>
+
+    <dimen name="content_max_width">720dp</dimen>
+    <dimen name="rail_width">80dp</dimen>
+    <dimen name="task_row_min_height">72dp</dimen>
+    <dimen name="task_row_vertical_padding">@dimen/space_3</dimen>
+    <dimen name="task_check_size">@dimen/space_12</dimen>
+    <dimen name="task_meta_icon_size">16dp</dimen>
+    <dimen name="task_meta_gap">6dp</dimen>
+    <dimen name="task_filter_vertical_margin">@dimen/space_2</dimen>
+    <dimen name="task_divider_inset">72dp</dimen>
+    <dimen name="task_editor_notes_min_height">120dp</dimen>
+    <dimen name="task_editor_section_gap">@dimen/space_6</dimen>
 </resources>

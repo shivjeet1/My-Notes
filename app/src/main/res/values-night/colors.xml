@@ -23,5 +23,6 @@
     <color name="outline_interactive">#777067</color>
     <color name="divider">#3A3530</color>
     <color name="danger">#F2B8B5</color>
+    <color name="success">#7FCBA4</color>
     <color name="on_danger">#601410</color>
 </resources>

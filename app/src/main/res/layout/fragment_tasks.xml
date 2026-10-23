@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tasksRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TasksFragment">
+
+    <com.shivjeet1.mynotes.util.MaxWidthLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.MyNotes.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/top_bar_height"
+            android:theme="@style/ThemeOverlay.MyNotes.Toolbar"
+            app:contentInsetStart="@dimen/screen_margin"
+            app:contentInsetStartWithNavigation="0dp"
+            app:contentInsetEnd="@dimen/space_1"
+            app:title="@string/tasks"
+            app:titleTextAppearance="@style/TextAppearance.MyNotes.AppBarTitle" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/filterChips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/screen_margin"
+            android:paddingTop="@dimen/task_filter_vertical_margin"
+            android:paddingEnd="@dimen/screen_margin"
+            android:paddingBottom="@dimen/task_filter_vertical_margin"
+            app:chipSpacingHorizontal="@dimen/space_2"
+            app:chipSpacingVertical="@dimen/space_1"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAll"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/filter_all" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipToday"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_today" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipUpcoming"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_upcoming" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipDone"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_done" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <FrameLayout
+            android:id="@+id/taskContentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/taskRv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/list_bottom_padding"
+                android:scrollbars="none" />
+
+            <LinearLayout
+                android:id="@+id/taskEmptyState"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/space_8"
+                android:paddingEnd="@dimen/space_8"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/taskEmptyIcon"
+                    android:layout_width="@dimen/empty_icon_size"
+                    android:layout_height="@dimen/empty_icon_size"
+                    android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_checklist_24"
+                    app:tint="@color/surface_dim" />
+
+                <TextView
+                    android:id="@+id/taskEmptyTitle"
+                    style="@style/TextAppearance.MyNotes.TitleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_6"
+                    android:gravity="center"
+                    tools:text="No tasks yet" />
+
+                <TextView
+                    android:id="@+id/taskEmptyMessage"
+                    style="@style/TextAppearance.MyNotes.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:gravity="center"
+                    android:textColor="@color/text_secondary"
+                    tools:text="Add a task to keep the day in view." />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/taskEmptyAction"
+                    style="@style/Widget.MyNotes.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_6"
+                    android:text="@string/create_first_task" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/taskLoadingState"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:layout_width="@dimen/progress_size"
+                    android:layout_height="@dimen/progress_size"
+                    android:indeterminate="true"
+                    app:indicatorColor="@color/accent" />
+
+                <TextView
+                    style="@style/TextAppearance.MyNotes.BodySmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_4"
+                    android:text="@string/loading_tasks" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/taskErrorState"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/space_8"
+                android:paddingEnd="@dimen/space_8"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/taskErrorTitle"
+                    style="@style/TextAppearance.MyNotes.TitleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/tasks_error_title" />
+
+                <TextView
+                    style="@style/TextAppearance.MyNotes.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:gravity="center"
+                    android:text="@string/tasks_error_message"
+                    android:textColor="@color/text_secondary" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/taskRetryButton"
+                    style="@style/Widget.MyNotes.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_6"
+                    android:text="@string/retry" />
+            </LinearLayout>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/addTaskBtn"
+                style="@style/Widget.MyNotes.Fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/fab_margin"
+                android:contentDescription="@string/add_task"
+                android:src="@drawable/ic_add_24" />
+        </FrameLayout>
+    </com.shivjeet1.mynotes.util.MaxWidthLinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

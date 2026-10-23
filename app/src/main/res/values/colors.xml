@@ -37,5 +37,6 @@
     <color name="outline_interactive">@color/stone_400</color>
     <color name="divider">@color/stone_200</color>
     <color name="danger">@color/red_700</color>
+    <color name="success">#2E6B4F</color>
     <color name="on_danger">@color/paper</color>
 </resources>

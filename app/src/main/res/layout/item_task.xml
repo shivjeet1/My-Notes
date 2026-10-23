@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:ignore="UseCompoundDrawables">
+
+    <LinearLayout
+        android:id="@+id/taskRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/task_row_min_height"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/space_2"
+        android:paddingTop="@dimen/task_row_vertical_padding"
+        android:paddingEnd="@dimen/space_1"
+        android:paddingBottom="@dimen/task_row_vertical_padding">
+
+        <ImageButton
+            android:id="@+id/taskCheck"
+            android:layout_width="@dimen/task_check_size"
+            android:layout_height="@dimen/task_check_size"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/mark_done"
+            android:src="@drawable/ic_radio_button_unchecked_24"
+            app:tint="@color/outline_interactive" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_2"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/taskTitle"
+                style="@style/TextAppearance.MyNotes.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                tools:text="Call the dentist" />
+
+            <LinearLayout
+                android:id="@+id/dueRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/dueIcon"
+                    android:layout_width="@dimen/task_meta_icon_size"
+                    android:layout_height="@dimen/task_meta_icon_size"
+                    android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_calendar_today_24"
+                    app:tint="@color/text_secondary" />
+
+                <TextView
+                    android:id="@+id/dueText"
+                    style="@style/TextAppearance.MyNotes.Label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/task_meta_gap"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    tools:text="Today 18:00" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reminderRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/reminderIcon"
+                    android:layout_width="@dimen/task_meta_icon_size"
+                    android:layout_height="@dimen/task_meta_icon_size"
+                    android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_bell_24"
+                    app:tint="@color/text_secondary" />
+
+                <TextView
+                    android:id="@+id/reminderText"
+                    style="@style/TextAppearance.MyNotes.Label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/task_meta_gap"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    tools:text="Reminder · 17:45" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/taskMore"
+            android:layout_width="@dimen/space_12"
+            android:layout_height="@dimen/space_12"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/task_actions"
+            android:src="@drawable/ic_more_vert_24" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/task_divider_inset"
+        android:background="@color/divider"
+        android:importantForAccessibility="no" />
+</LinearLayout>

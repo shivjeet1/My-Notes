@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settingsRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity">
+
+    <com.shivjeet1.mynotes.util.MaxWidthLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.MyNotes.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/top_bar_height"
+            android:theme="@style/ThemeOverlay.MyNotes.Toolbar"
+            app:navigationContentDescription="@string/navigate_up"
+            app:navigationIcon="@drawable/ic_arrow_back_24"
+            app:title="@string/settings"
+            app:titleTextAppearance="@style/TextAppearance.MyNotes.AppBarTitle" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/settingsScroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/screen_margin"
+                android:paddingEnd="@dimen/screen_margin"
+                android:paddingBottom="@dimen/space_8">
+
+                <TextView
+                    android:id="@+id/appearanceLabel"
+                    style="@style/TextAppearance.MyNotes.SectionLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/settings_section_top_margin"
+                    android:layout_marginBottom="@dimen/space_2"
+                    android:text="@string/appearance" />
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.MyNotes.Panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/themeRow"
+                            style="@style/Widget.MyNotes.SettingsRow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/TextAppearance.MyNotes.Title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/theme" />
+
+                                <TextView
+                                    android:id="@+id/themeSummary"
+                                    style="@style/TextAppearance.MyNotes.BodySmall"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/space_1"
+                                    android:text="@string/theme_summary_system" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size"
+                                android:layout_height="@dimen/icon_size"
+                                android:layout_marginStart="@dimen/space_3"
+                                android:contentDescription="@null"
+                                android:importantForAccessibility="no"
+                                android:src="@drawable/ic_chevron_right_24"
+                                app:tint="@color/text_secondary" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <TextView
+                    android:id="@+id/remindersLabel"
+                    style="@style/TextAppearance.MyNotes.SectionLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/settings_section_top_margin"
+                    android:layout_marginBottom="@dimen/space_2"
+                    android:text="@string/reminders" />
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.MyNotes.Panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/notificationsRow"
+                            style="@style/Widget.MyNotes.SettingsRow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/TextAppearance.MyNotes.Title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/notifications" />
+
+                                <TextView
+                                    android:id="@+id/notificationsSummary"
+                                    style="@style/TextAppearance.MyNotes.BodySmall"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/space_1"
+                                    android:text="@string/notifications_blocked" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size"
+                                android:layout_height="@dimen/icon_size"
+                                android:layout_marginStart="@dimen/space_3"
+                                android:contentDescription="@null"
+                                android:importantForAccessibility="no"
+                                android:src="@drawable/ic_chevron_right_24"
+                                app:tint="@color/text_secondary" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="@dimen/space_4"
+                            android:background="@color/divider"
+                            android:importantForAccessibility="no" />
+
+                        <LinearLayout
+                            android:id="@+id/preciseTimingRow"
+                            style="@style/Widget.MyNotes.SettingsRow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/TextAppearance.MyNotes.Title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/precise_timing" />
+
+                                <TextView
+                                    android:id="@+id/preciseSummary"
+                                    style="@style/TextAppearance.MyNotes.BodySmall"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/space_1"
+                                    android:text="@string/precise_unavailable" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size"
+                                android:layout_height="@dimen/icon_size"
+                                android:layout_marginStart="@dimen/space_3"
+                                android:contentDescription="@null"
+                                android:importantForAccessibility="no"
+                                android:src="@drawable/ic_chevron_right_24"
+                                app:tint="@color/text_secondary" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="@dimen/space_4"
+                            android:background="@color/divider"
+                            android:importantForAccessibility="no" />
+
+                        <LinearLayout
+                            android:id="@+id/defaultReminderRow"
+                            style="@style/Widget.MyNotes.SettingsRow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/TextAppearance.MyNotes.Title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/default_reminder" />
+
+                                <TextView
+                                    android:id="@+id/defaultReminderSummary"
+                                    style="@style/TextAppearance.MyNotes.BodySmall"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/space_1"
+                                    android:text="@string/default_reminder_none" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size"
+                                android:layout_height="@dimen/icon_size"
+                                android:layout_marginStart="@dimen/space_3"
+                                android:contentDescription="@null"
+                                android:importantForAccessibility="no"
+                                android:src="@drawable/ic_chevron_right_24"
+                                app:tint="@color/text_secondary" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/dataLabel"
+                    style="@style/TextAppearance.MyNotes.SectionLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/settings_section_top_margin"
+                    android:layout_marginBottom="@dimen/space_2"
+                    android:text="@string/data" />
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.MyNotes.Panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/backupRow"
+                            style="@style/Widget.MyNotes.SettingsRow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/TextAppearance.MyNotes.Title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/backup_notes_title" />
+
+                                <TextView
+                                    style="@style/TextAppearance.MyNotes.BodySmall"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/space_1"
+                                    android:text="@string/backup_notes_summary" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size"
+                                android:layout_height="@dimen/icon_size"
+                                android:layout_marginStart="@dimen/space_3"
+                                android:contentDescription="@null"
+                                android:importantForAccessibility="no"
+                                android:src="@drawable/ic_chevron_right_24"
+                                app:tint="@color/text_secondary" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="@dimen/space_4"
+                            android:background="@color/divider"
+                            android:importantForAccessibility="no" />
+
+                        <LinearLayout
+                            android:id="@+id/restoreRow"
+                            style="@style/Widget.MyNotes.SettingsRow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/TextAppearance.MyNotes.Title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/restore_notes_title" />
+
+                                <TextView
+                                    style="@style/TextAppearance.MyNotes.BodySmall"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/space_1"
+                                    android:text="@string/restore_notes_summary" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size"
+                                android:layout_height="@dimen/icon_size"
+                                android:layout_marginStart="@dimen/space_3"
+                                android:contentDescription="@null"
+                                android:importantForAccessibility="no"
+                                android:src="@drawable/ic_chevron_right_24"
+                                app:tint="@color/text_secondary" />
+                        </LinearLayout>
+
+                        <com.google.android.material.progressindicator.LinearProgressIndicator
+                            android:id="@+id/dataProgress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            app:indicatorColor="@color/accent"
+                            app:trackColor="@color/surface_variant"
+                            app:trackThickness="2dp" />
+
+                        <TextView
+                            android:id="@+id/dataStatus"
+                            style="@style/TextAppearance.MyNotes.BodySmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/space_4"
+                            android:layout_marginTop="@dimen/space_2"
+                            android:layout_marginEnd="@dimen/space_4"
+                            android:layout_marginBottom="@dimen/space_3"
+                            android:accessibilityLiveRegion="polite"
+                            android:visibility="gone"
+                            tools:text="Preparing backup…" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/aboutLabel"
+                    style="@style/TextAppearance.MyNotes.SectionLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/settings_section_top_margin"
+                    android:layout_marginBottom="@dimen/space_2"
+                    android:text="@string/about" />
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.MyNotes.Panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/settings_row_min_height"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/space_4"
+                            android:paddingTop="@dimen/space_3"
+                            android:paddingEnd="@dimen/space_4"
+                            android:paddingBottom="@dimen/space_3">
+
+                            <TextView
+                                style="@style/TextAppearance.MyNotes.Body"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/version" />
+
+                            <TextView
+                                android:id="@+id/versionValue"
+                                style="@style/TextAppearance.MyNotes.BodySmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/space_3"
+                                tools:text="1.0" />
+                        </LinearLayout>
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="@dimen/space_4"
+                            android:background="@color/divider"
+                            android:importantForAccessibility="no" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/settings_row_min_height"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/space_4"
+                            android:paddingTop="@dimen/space_3"
+                            android:paddingEnd="@dimen/space_4"
+                            android:paddingBottom="@dimen/space_3">
+
+                            <TextView
+                                style="@style/TextAppearance.MyNotes.Body"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/notes" />
+
+                            <TextView
+                                android:id="@+id/notesCountValue"
+                                style="@style/TextAppearance.MyNotes.BodySmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/space_3"
+                                tools:text="3" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="@dimen/space_4"
+                            android:background="@color/divider"
+                            android:importantForAccessibility="no" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/settings_row_min_height"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/space_4"
+                            android:paddingTop="@dimen/space_3"
+                            android:paddingEnd="@dimen/space_4"
+                            android:paddingBottom="@dimen/space_3">
+
+                            <TextView
+                                style="@style/TextAppearance.MyNotes.Body"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/tasks" />
+
+                            <TextView
+                                android:id="@+id/tasksCountValue"
+                                style="@style/TextAppearance.MyNotes.BodySmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/space_3"
+                                tools:text="1" />
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="@dimen/space_4"
+                            android:background="@color/divider"
+                            android:importantForAccessibility="no" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/settings_row_min_height"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/space_4"
+                            android:paddingTop="@dimen/space_3"
+                            android:paddingEnd="@dimen/space_4"
+                            android:paddingBottom="@dimen/space_3">
+
+                            <TextView
+                                style="@style/TextAppearance.MyNotes.Body"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/storage" />
+
+                            <TextView
+                                style="@style/TextAppearance.MyNotes.BodySmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/space_3"
+                                android:text="@string/on_this_device" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </com.shivjeet1.mynotes.util.MaxWidthLinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
