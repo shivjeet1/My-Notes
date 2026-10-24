@@ -27,14 +27,12 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          accept-android-sdk-licenses: true
+          log-accepted-android-sdk-licenses: false
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
-      - name: Accept licenses and install packages
-        run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
 
       - name: Build debug APK
         run: ./gradlew assembleDebug --no-daemon
@@ -73,14 +71,12 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          accept-android-sdk-licenses: true
+          log-accepted-android-sdk-licenses: false
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
-      - name: Accept licenses and install packages
-        run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" || true
 
       - name: Decode keystore
         env:
