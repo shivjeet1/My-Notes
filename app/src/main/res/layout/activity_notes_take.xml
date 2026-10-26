@@ -22,6 +22,53 @@
             app:navigationIcon="@drawable/ic_arrow_back_24"
             app:title="@string/new_note" />
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/draftBanner"
+            style="@style/Widget.MyNotes.Panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/editor_horizontal_padding"
+            android:layout_marginTop="@dimen/space_2"
+            android:layout_marginEnd="@dimen/editor_horizontal_padding"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/space_4"
+                android:paddingTop="@dimen/space_2"
+                android:paddingEnd="@dimen/space_2"
+                android:paddingBottom="@dimen/space_2">
+
+                <TextView
+                    style="@style/TextAppearance.MyNotes.BodySmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/autosave_restored" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/draftDiscard"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/discard" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/autosaveStatus"
+            style="@style/TextAppearance.MyNotes.Label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/editor_horizontal_padding"
+            android:paddingTop="@dimen/space_1"
+            android:paddingEnd="@dimen/editor_horizontal_padding"
+            android:paddingBottom="@dimen/space_1"
+            android:visibility="gone" />
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/editorScroll"
             android:layout_width="match_parent"
@@ -103,3 +150,4 @@
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
