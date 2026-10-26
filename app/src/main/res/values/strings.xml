@@ -38,6 +38,15 @@
     <string name="note_deleted">Note deleted</string>
     <string name="note_saved">Note saved</string>
     <string name="save_failed">Couldn’t save note</string>
+    <string name="autosave_enabled">Auto-save enabled</string>
+    <string name="autosave_saving">Saving…</string>
+    <string name="autosave_saved">Saved %1$s</string>
+    <string name="autosave_failed">Couldn’t save · Tap to retry</string>
+    <string name="autosave_restored">Unsaved changes restored</string>
+    <string name="discard">Discard</string>
+    <string name="note_autosave">Auto-save notes</string>
+    <string name="note_autosave_on">Saves as you type</string>
+    <string name="note_autosave_off">Use the Save button</string>
     <string name="delete_failed">Couldn’t delete note</string>
     <string name="pin_failed">Couldn’t update pin</string>
     <string name="pinned_feedback">Pinned</string>
@@ -54,7 +63,6 @@
     <string name="discard_title">Discard changes?</string>
     <string name="discard_message">Your edits to this note will be lost.</string>
     <string name="keep_editing">Keep editing</string>
-    <string name="discard">Discard</string>
 
     <string name="settings">Settings</string>
     <string name="notes">Notes</string>
