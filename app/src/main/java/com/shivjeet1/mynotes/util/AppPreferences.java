@@ -14,6 +14,7 @@ public final class AppPreferences {
     private static final String KEY_REMINDER_OFFSET = "reminder_offset_minutes";
     private static final String KEY_DEFAULT_REMINDER = "default_reminder_enabled";
     private static final String KEY_NOTIFICATION_REQUESTED = "notification_permission_requested";
+    private static final String KEY_NOTE_AUTOSAVE = "note_autosave_enabled";
 
     private static final String VALUE_SYSTEM = "system";
     private static final String VALUE_LIGHT = "light";
@@ -80,6 +81,18 @@ public final class AppPreferences {
         context.getApplicationContext()
                 .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                 .edit().putBoolean(KEY_NOTIFICATION_REQUESTED, true).apply();
+    }
+
+    public static boolean isNoteAutosaveEnabled(Context context) {
+        return context.getApplicationContext()
+                .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                .getBoolean(KEY_NOTE_AUTOSAVE, true);
+    }
+
+    public static void setNoteAutosaveEnabled(Context context, boolean enabled) {
+        context.getApplicationContext()
+                .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                .edit().putBoolean(KEY_NOTE_AUTOSAVE, enabled).apply();
     }
 
     public static int toNightMode(ThemeMode mode) {
