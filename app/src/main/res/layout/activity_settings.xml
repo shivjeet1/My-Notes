@@ -62,6 +62,52 @@
                         android:orientation="vertical">
 
                         <LinearLayout
+                            android:id="@+id/notesSettingsRow"
+                            style="@style/Widget.MyNotes.SettingsRow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/TextAppearance.MyNotes.Title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/note_autosave" />
+
+                                <TextView
+                                    android:id="@+id/notesAutosaveSummary"
+                                    style="@style/TextAppearance.MyNotes.BodySmall"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/space_1"
+                                    android:text="@string/note_autosave_on" />
+                            </LinearLayout>
+
+                            <com.google.android.material.materialswitch.MaterialSwitch
+                                android:id="@+id/notesAutosaveSwitch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/space_3" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.MyNotes.Panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
                             android:id="@+id/themeRow"
                             style="@style/Widget.MyNotes.SettingsRow"
                             android:layout_width="match_parent"
