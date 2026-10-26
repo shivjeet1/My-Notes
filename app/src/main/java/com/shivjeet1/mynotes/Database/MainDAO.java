@@ -15,7 +15,7 @@ import java.util.List;
 public interface MainDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Notes note);
+    long insert(Notes note);
     @Query("SELECT * FROM notes ORDER BY pinned DESC, id DESC")
     List<Notes> getAll();
 
