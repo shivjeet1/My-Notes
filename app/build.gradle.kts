@@ -10,8 +10,8 @@ android {
         applicationId = "com.shivjeet1.mynotes"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
-        versionName = "2.0"
+        versionCode = 3
+        versionName = "2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -26,6 +26,18 @@ android {
         getByName("androidTest").assets.srcDir("$projectDir/schemas")
     }
 
+    signingConfigs {
+        create("release") {
+            val keystorePath = System.getenv("MYNOTES_KEYSTORE_FILE")
+            if (!keystorePath.isNullOrBlank()) {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("MYNOTES_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("MYNOTES_KEY_ALIAS")
+                keyPassword = System.getenv("MYNOTES_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -33,6 +45,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (!System.getenv("MYNOTES_KEYSTORE_FILE").isNullOrBlank()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
     compileOptions {
