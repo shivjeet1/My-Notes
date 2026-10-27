@@ -45,6 +45,8 @@ import com.shivjeet1.mynotes.Database.RoomDb;
 import com.shivjeet1.mynotes.Interface.NotesClickListener;
 import com.shivjeet1.mynotes.Model.Notes;
 import com.shivjeet1.mynotes.util.AppBarActions;
+import com.shivjeet1.mynotes.util.AppPreferences;
+import com.shivjeet1.mynotes.util.Motion;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -101,6 +103,10 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
                 }
                 Notes savedNote = (Notes) extra;
                 commitPendingDelete();
+                if (result.getData().getBooleanExtra(NotesTakeActivity.EXTRA_AUTOSAVED, false)) {
+                    upsertNote(savedNote);
+                    return;
+                }
                 persistNote(savedNote, savedNote.getID() <= 0);
             });
 
@@ -264,6 +270,23 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
             intent.putExtra(NotesTakeActivity.EXTRA_OLD_NOTE, note);
         }
         noteEditorLauncher.launch(intent);
+    }
+
+    private void upsertNote(Notes savedNote) {
+        boolean isNew = savedNote.getID() <= 0;
+        if (destroyed) {
+            return;
+        }
+        allNotes.removeIf(note -> note.getID() == savedNote.getID() && savedNote.getID() > 0);
+        allNotes.add(savedNote);
+        sortNotes(allNotes);
+        applyFilter(false);
+        if (currentQuery.isEmpty()) {
+            searchInput.setText("");
+            searchHandler.removeCallbacksAndMessages(null);
+            currentQuery = "";
+        }
+        showFeedback(R.string.autosave_enabled);
     }
 
     private void persistNote(Notes savedNote, boolean isNew) {
