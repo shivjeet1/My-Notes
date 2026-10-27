@@ -36,6 +36,7 @@ import com.shivjeet1.mynotes.util.AppPreferences;
 import com.shivjeet1.mynotes.util.BackupManager;
 import com.shivjeet1.mynotes.util.ReminderScheduler;
 import com.shivjeet1.mynotes.util.WindowInsetsHelper;
+import com.google.android.material.materialswitch.MaterialSwitch;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -86,6 +87,8 @@ public class SettingsActivity extends AppCompatActivity {
     private View notificationsRow;
     private View preciseTimingRow;
     private View defaultReminderRow;
+    private TextView notesAutosaveSummary;
+    private MaterialSwitch notesAutosaveSwitch;
     private RoomDb database;
     private boolean busy;
 
@@ -115,11 +118,28 @@ public class SettingsActivity extends AppCompatActivity {
         notificationsRow = findViewById(R.id.notificationsRow);
         preciseTimingRow = findViewById(R.id.preciseTimingRow);
         defaultReminderRow = findViewById(R.id.defaultReminderRow);
+        notesAutosaveSummary = findViewById(R.id.notesAutosaveSummary);
+        notesAutosaveSwitch = findViewById(R.id.notesAutosaveSwitch);
 
         findViewById(R.id.themeRow).setOnClickListener(view -> showThemeChooser());
         notificationsRow.setOnClickListener(view -> onNotificationsClicked());
         preciseTimingRow.setOnClickListener(view -> onPreciseTimingClicked());
         defaultReminderRow.setOnClickListener(view -> showDefaultReminderChooser());
+        View notesSettingsRow = findViewById(R.id.notesSettingsRow);
+        if (notesSettingsRow != null) {
+            notesSettingsRow.setOnClickListener(view -> {
+                if (notesAutosaveSwitch != null) {
+                    notesAutosaveSwitch.toggle();
+                }
+            });
+        }
+        if (notesAutosaveSwitch != null) {
+            notesAutosaveSwitch.setChecked(AppPreferences.isNoteAutosaveEnabled(this));
+            notesAutosaveSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                AppPreferences.setNoteAutosaveEnabled(this, isChecked);
+                updateNotesAutosaveSummary();
+            });
+        }
         backupRow.setOnClickListener(view -> createBackupLauncher.launch(BackupManager.FILE_NAME));
         restoreRow.setOnClickListener(view -> openBackupLauncher.launch(
                 new String[]{"application/json", "text/plain"}));
@@ -141,6 +161,10 @@ public class SettingsActivity extends AppCompatActivity {
         super.onResume();
         updateThemeSummary();
         updateReminderSummaries();
+        updateNotesAutosaveSummary();
+        if (notesAutosaveSwitch != null) {
+            notesAutosaveSwitch.setChecked(AppPreferences.isNoteAutosaveEnabled(this));
+        }
         loadCounts();
     }
 
@@ -317,6 +341,17 @@ public class SettingsActivity extends AppCompatActivity {
             default:
                 themeSummary.setText(R.string.theme_summary_system);
                 break;
+        }
+    }
+
+    private void updateNotesAutosaveSummary() {
+        if (notesAutosaveSummary == null) {
+            return;
+        }
+        if (AppPreferences.isNoteAutosaveEnabled(this)) {
+            notesAutosaveSummary.setText(R.string.note_autosave_on);
+        } else {
+            notesAutosaveSummary.setText(R.string.note_autosave_off);
         }
     }
 
