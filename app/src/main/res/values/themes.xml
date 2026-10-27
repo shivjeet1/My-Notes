@@ -42,6 +42,10 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+        <item name="android:windowTransitionBackgroundFadeDuration">220</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="actionMenuTextAppearance">@style/TextAppearance.MyNotes.Action</item>
         <item name="actionMenuTextColor">@color/action_menu_text</item>
@@ -49,6 +53,4 @@
     </style>
 
     <style name="Theme.NotesApp" parent="Base.Theme.NotesApp" />
-
-    <style name="Theme.NotesApp.WithTransitions" parent="Theme.NotesApp.Transitions" />
 </resources>

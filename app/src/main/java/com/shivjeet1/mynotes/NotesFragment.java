@@ -1,9 +1,9 @@
 package com.shivjeet1.mynotes;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Intent;
-import androidx.core.app.ActivityOptionsCompat;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,8 +32,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.TooltipCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -105,6 +108,7 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
                 }
                 Notes savedNote = (Notes) extra;
                 commitPendingDelete();
+                skipNextResumeReload = true;
                 if (result.getData().getBooleanExtra(NotesTakeActivity.EXTRA_AUTOSAVED, false)) {
                     upsertNote(savedNote);
                     return;
@@ -137,8 +141,11 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
     private boolean loadFailed;
     private boolean destroyed;
     private boolean resumedOnce;
+    private boolean skipNextResumeReload;
     private Parcelable pendingScrollState;
     private ListState listState = ListState.LOADING;
+    private GridLayout skeletonGrid;
+    private ValueAnimator skeletonPulse;
 
     private enum ListState {
         LOADING, CONTENT, EMPTY, SEARCH_EMPTY, ERROR
@@ -172,6 +179,7 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
         emptyTitle = view.findViewById(R.id.emptyTitle);
         emptyMessage = view.findViewById(R.id.emptyMessage);
         emptyAction = view.findViewById(R.id.emptyAction);
+        skeletonGrid = view.findViewById(R.id.skeletonGrid);
 
         ViewCompat.setAccessibilityHeading(emptyTitle, true);
         ViewCompat.setAccessibilityHeading(view.findViewById(R.id.errorTitle), true);
@@ -191,6 +199,7 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
         setupRecyclerView();
         setupSearch();
         setupActions();
+        buildSkeletons();
 
         updateUiState();
         loadNotes(true, false);
@@ -203,9 +212,10 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
             return;
         }
         AppBarActions.updateThemeAction(requireContext(), toolbar);
-        if (resumedOnce) {
+        if (resumedOnce && !skipNextResumeReload) {
             loadNotes(false, false);
         }
+        skipNextResumeReload = false;
         resumedOnce = true;
     }
 
@@ -219,6 +229,53 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
         recyclerView.setHasFixedSize(false);
         noteListAdapter = new NoteListAdapter(requireContext(), notesClickListener);
         recyclerView.setAdapter(noteListAdapter);
+    }
+
+    private void buildSkeletons() {
+        if (skeletonGrid == null) {
+            return;
+        }
+        skeletonGrid.removeAllViews();
+        int span = Math.max(1, getResources().getInteger(R.integer.note_grid_span));
+        int count = span * 3;
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        for (int index = 0; index < count; index++) {
+            View skeleton = inflater.inflate(R.layout.item_note_skeleton, skeletonGrid, false);
+            GridLayout.LayoutParams params = skeleton.getLayoutParams()
+                    instanceof GridLayout.LayoutParams
+                    ? (GridLayout.LayoutParams) skeleton.getLayoutParams()
+                    : new GridLayout.LayoutParams();
+            params.width = 0;
+            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+            skeletonGrid.addView(skeleton, params);
+        }
+    }
+
+    private void updateSkeletonAnimation(boolean loading) {
+        if (skeletonGrid == null) {
+            return;
+        }
+        if (loading && Motion.isEnabled(requireContext())) {
+            if (skeletonPulse == null) {
+                skeletonPulse = ValueAnimator.ofFloat(1f, 0.55f);
+                skeletonPulse.setDuration(850L);
+                skeletonPulse.setRepeatMode(ValueAnimator.REVERSE);
+                skeletonPulse.setRepeatCount(ValueAnimator.INFINITE);
+                skeletonPulse.setInterpolator(
+                        new android.view.animation.AccelerateDecelerateInterpolator());
+                skeletonPulse.addUpdateListener(
+                        animation -> skeletonGrid.setAlpha((float) animation.getAnimatedValue()));
+            }
+            if (!skeletonPulse.isStarted()) {
+                skeletonPulse.start();
+            }
+        } else {
+            if (skeletonPulse != null) {
+                skeletonPulse.cancel();
+            }
+            skeletonGrid.setAlpha(1f);
+        }
     }
 
     private void setupSearch() {
@@ -271,26 +328,32 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
         if (note != null) {
             intent.putExtra(NotesTakeActivity.EXTRA_OLD_NOTE, note);
         }
-        View shared = null;
-        if (note != null) {
-            RecyclerView.ViewHolder holder = recyclerView.findViewHolderForItemId(note.getID());
-            if (holder != null) {
-                shared = holder.itemView;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && Motion.isEnabled(requireContext())) {
+            View shared = null;
+            if (note != null) {
+                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForItemId(note.getID());
+                if (holder != null) {
+                    shared = holder.itemView;
+                }
             }
-        }
-        if (shared != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            shared.setTransitionName("note_" + (note == null ? 0 : note.getID()));
-            ActivityOptions.makeSceneTransitionAnimation(requireActivity(),
-                    android.util.Pair.create(shared, "note_editor")).toBundle();
-        } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            ActivityOptions.makeCustomAnimation(requireContext(),
-                    R.anim.enter_rise, R.anim.exit_fade_out).toBundle();
+            if (shared != null) {
+                String transitionName = "note_" + note.getID();
+                shared.setTransitionName(transitionName);
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        requireActivity(), Pair.create(shared, transitionName));
+                noteEditorLauncher.launch(intent, options);
+                return;
+            }
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeCustomAnimation(
+                    requireContext(), R.anim.enter_rise, R.anim.exit_fade_out);
+            noteEditorLauncher.launch(intent, options);
+            return;
         }
         noteEditorLauncher.launch(intent);
     }
 
     private void upsertNote(Notes savedNote) {
-        boolean isNew = savedNote.getID() <= 0;
         if (destroyed) {
             return;
         }
@@ -303,7 +366,6 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
             searchHandler.removeCallbacksAndMessages(null);
             currentQuery = "";
         }
-        showFeedback(R.string.autosave_enabled);
     }
 
     private void persistNote(Notes savedNote, boolean isNew) {
@@ -486,6 +548,7 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
                 ? View.VISIBLE : View.GONE);
         loadingState.setVisibility(state == ListState.LOADING ? View.VISIBLE : View.GONE);
         errorState.setVisibility(state == ListState.ERROR ? View.VISIBLE : View.GONE);
+        updateSkeletonAnimation(state == ListState.LOADING);
     }
 
     private void announceSearchState() {
@@ -682,6 +745,10 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
         destroyed = true;
         searchHandler.removeCallbacksAndMessages(null);
         mainHandler.removeCallbacksAndMessages(null);
+        if (skeletonPulse != null) {
+            skeletonPulse.cancel();
+            skeletonPulse = null;
+        }
         commitPendingDelete();
         super.onDestroyView();
     }

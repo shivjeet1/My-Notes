@@ -107,6 +107,9 @@ public class NotesTakeActivity extends AppCompatActivity {
         }
         checkDraft();
         updateSaveState();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && notes.getID() > 0) {
+            findViewById(R.id.root).setTransitionName("note_" + notes.getID());
+        }
 
         titleEdt.addTextChangedListener(editorWatcher);
         noteEdt.addTextChangedListener(editorWatcher);
@@ -275,6 +278,8 @@ public class NotesTakeActivity extends AppCompatActivity {
                     autosavedThisSession = true;
                     setAutosaveStatus(getString(R.string.autosave_saved,
                             new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date())));
+                    editorMeta.setText(getString(R.string.edited, notes.getDate()));
+                    editorMeta.setVisibility(View.VISIBLE);
                     handler.postDelayed(() -> autosaveStatus.setVisibility(View.GONE), 1200L);
                 });
             } catch (Exception e) {
@@ -351,7 +356,7 @@ public class NotesTakeActivity extends AppCompatActivity {
         }
         setResult(Activity.RESULT_OK, result);
         NoteDraftStore.clear(this, notes.getID());
-        finish();
+        finishEditor();
     }
 
     @Override
@@ -359,7 +364,9 @@ public class NotesTakeActivity extends AppCompatActivity {
         super.onPause();
         if (autosaveEnabled) {
             flushAutosaveNow();
-            saveDraft();
+            if (dirty) {
+                saveDraft();
+            }
         }
     }
 
@@ -368,7 +375,9 @@ public class NotesTakeActivity extends AppCompatActivity {
         super.onStop();
         if (autosaveEnabled) {
             flushAutosaveNow();
-            saveDraft();
+            if (dirty) {
+                saveDraft();
+            }
         }
     }
 
@@ -379,24 +388,19 @@ public class NotesTakeActivity extends AppCompatActivity {
     }
 
     @Override
+    @android.annotation.SuppressLint("MissingSuperCall")
     public void onBackPressed() {
         if (autosaveEnabled) {
             flushAutosaveNow();
-            NoteDraftStore.clear(this, notes.getID());
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            finishAfterTransition();
-            return;
-        }
-        super.onBackPressed();
+        finishEditor();
     }
 
-    @Override
-    public void finish() {
+    private void finishEditor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();
             return;
         }
-        super.finish();
+        finish();
     }
 }

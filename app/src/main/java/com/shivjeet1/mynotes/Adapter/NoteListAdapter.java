@@ -20,6 +20,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.shivjeet1.mynotes.Interface.NotesClickListener;
 import com.shivjeet1.mynotes.Model.Notes;
 import com.shivjeet1.mynotes.R;
+import com.shivjeet1.mynotes.util.Motion;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -127,9 +128,31 @@ public class NoteListAdapter extends ListAdapter<Notes, NoteListAdapter.NotesVie
                 pinned ? R.color.card_stroke_pinned : R.color.card_stroke));
         holder.cardView.setStrokeWidth(context.getResources().getDimensionPixelSize(
                 pinned ? R.dimen.card_stroke_width_pinned : R.dimen.card_stroke_width));
+
+        Object previousPinState = holder.pinnedIcon.getTag();
+        holder.pinnedIcon.setTag(pinned);
         holder.pinnedIcon.setVisibility(pinned ? View.VISIBLE : View.GONE);
         holder.pinnedIcon.setContentDescription(
                 pinned ? context.getString(R.string.pinned) : null);
+        boolean justPinned = pinned && previousPinState != null
+                && !Boolean.TRUE.equals(previousPinState);
+        if (justPinned && Motion.isEnabled(context)) {
+            holder.pinnedIcon.setScaleX(0.6f);
+            holder.pinnedIcon.setScaleY(0.6f);
+            holder.pinnedIcon.setAlpha(0f);
+            holder.pinnedIcon.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .alpha(1f)
+                    .setDuration(Motion.MEDIUM)
+                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                    .start();
+        } else {
+            holder.pinnedIcon.animate().cancel();
+            holder.pinnedIcon.setScaleX(1f);
+            holder.pinnedIcon.setScaleY(1f);
+            holder.pinnedIcon.setAlpha(1f);
+        }
     }
 
     @Override

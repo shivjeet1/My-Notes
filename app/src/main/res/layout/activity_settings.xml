@@ -43,13 +43,13 @@
                 android:paddingBottom="@dimen/space_8">
 
                 <TextView
-                    android:id="@+id/appearanceLabel"
+                    android:id="@+id/notesLabel"
                     style="@style/TextAppearance.MyNotes.SectionLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/settings_section_top_margin"
                     android:layout_marginBottom="@dimen/space_2"
-                    android:text="@string/appearance" />
+                    android:text="@string/notes" />
 
                 <com.google.android.material.card.MaterialCardView
                     style="@style/Widget.MyNotes.Panel"
@@ -96,6 +96,15 @@
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/appearanceLabel"
+                    style="@style/TextAppearance.MyNotes.SectionLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/settings_section_top_margin"
+                    android:layout_marginBottom="@dimen/space_2"
+                    android:text="@string/appearance" />
 
                 <com.google.android.material.card.MaterialCardView
                     style="@style/Widget.MyNotes.Panel"

@@ -125,29 +125,24 @@
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
 
-            <LinearLayout
+            <FrameLayout
                 android:id="@+id/loadingState"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
+                android:accessibilityLiveRegion="polite"
+                android:contentDescription="@string/loading_notes"
                 android:visibility="gone">
 
-                <com.google.android.material.progressindicator.CircularProgressIndicator
-                    android:layout_width="wrap_content"
+                <android.widget.GridLayout
+                    android:id="@+id/skeletonGrid"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:indeterminate="true"
-                    app:indicatorColor="@color/accent"
-                    app:indicatorSize="@dimen/progress_size"
-                    app:trackColor="@color/surface_variant" />
-
-                <TextView
-                    style="@style/TextAppearance.MyNotes.BodySmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_4"
-                    android:text="@string/loading_notes" />
-            </LinearLayout>
+                    android:columnCount="@integer/note_grid_span"
+                    android:paddingStart="@dimen/grid_outer_padding"
+                    android:paddingTop="@dimen/space_1"
+                    android:paddingEnd="@dimen/grid_outer_padding"
+                    android:paddingBottom="@dimen/list_bottom_padding" />
+            </FrameLayout>
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/errorState"
