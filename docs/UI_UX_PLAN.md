@@ -1,10 +1,10 @@
 # My Notes — UI/UX Refactoring & Optimization Plan
 
-**Status:** v1 redesign and v2 tasks/reminders/settings/backup implemented; core flows validated on an Android 14 emulator  
+**Status:** v1 redesign, v2 tasks/reminders/settings/backup, and the fluidity pass (autosave, transitions, skeleton loading, pin animation) implemented; core flows validated on an Android 14 emulator  
 **Scope:** The Android app in this repository (Java + XML, Material 3, minSdk 24, targetSdk 34)  
 **Skills applied:** `ui-ux-designer` (tokens, flows, component states, accessibility), `ui-visual-validator` (evidence-based visual QA), `taste-skill` / `design-taste-frontend` (design read, anti-slop direction, typography and layout discipline)
 
-> **Implementation note (October 2026).** The v1 design system, list, state views, editor, pin sorting, delete undo, responsive dimensions, and conditional inset handling are implemented. The v2 increment adds the Notes/Tasks shell, task data and editor, due dates and reminders, Settings, and JSON backup/restore. Room is now version 3 with an exported schema and a tested `MIGRATION_2_3`; `fallbackToDestructiveMigration()` remains removed. API 30+ uses edge-to-edge with cutout/system-bar/IME padding; API 24–29 keeps fitted system windows because `adjustResize` is more reliable there. Validation covered phone and tablet widths, light/dark themes, 200% font scale, reminder delivery, boot rescheduling, and backup/restore on an Android 14 emulator. A physical-device TalkBack walkthrough remains the final optional hardware check.
+> **Implementation note (October 2026).** The v1 design system, list, state views, editor, pin sorting, delete undo, responsive dimensions, and conditional inset handling are implemented. The v2 increment adds the Notes/Tasks shell, task data and editor, due dates and reminders, Settings, and JSON backup/restore. Room is now version 3 with an exported schema and a tested `MIGRATION_2_3`; `fallbackToDestructiveMigration()` remains removed. API 30+ uses edge-to-edge with cutout/system-bar/IME padding; API 24–29 keeps fitted system windows because `adjustResize` is more reliable there. The fluidity pass adds debounced note autosave with draft recovery, shared-element editor transitions, a tab fade, skeleton loading cards, and a pin confirmation animation; all motion is gated by the system animation scale. Validation covered phone and tablet widths, light/dark themes, 200% font scale, reminder delivery, boot rescheduling, and backup/restore on an Android 14 emulator. A physical-device TalkBack walkthrough remains the final optional hardware check.
 
 | Skill | Applied in this plan |
 | :--- | :--- |
@@ -470,10 +470,12 @@ Rules:
 
 ### 4.7 Motion
 
-- Use standard Material activity transitions and ripple feedback. No custom shared-element choreography in this pass.
+- Use standard Material activity transitions and ripple feedback. Note editing uses a shared-element transition from the tapped card into the editor root; new notes use a short rise/fade. Return uses the reverse shared-element transition.
 - Card press: ripple only; no scale transform that can clip in a staggered grid.
+- Pin confirmation: a 220ms scale/fade on the pin glyph; list reordering still uses `DiffUtil`.
 - Delete: Snackbar slides in from the bottom; undo restores with a short fade/slide, not a bounce.
-- Respect system animation scale: read `Settings.Global.ANIMATOR_DURATION_SCALE` (works on API 24+) or guard `ValueAnimator.areAnimatorsEnabled()` with API 26+; do not run infinite skeleton shimmer when animations are disabled.
+- Loading: three to six skeleton cards (matching the active grid span) pulse gently instead of showing a spinner.
+- Respect system animation scale: read `Settings.Global.ANIMATOR_DURATION_SCALE` (works on API 24+) or guard `ValueAnimator.areAnimatorsEnabled()` with API 26+; do not run infinite skeleton shimmer or shared-element transitions when animations are disabled.
 - No auto-playing marquee, parallax, or looping motion.
 
 ### 4.8 Iconography and assets

@@ -11,10 +11,10 @@ The project is intentionally small: it is a practical reference for Android fund
 ### Notes
 
 - **Create notes** with an optional title and a body; blank bodies are blocked and titles fall back to “Untitled”.
-- **Edit existing notes** by tapping a card, with unsaved-changes protection on back.
+- **Edit existing notes** by tapping a card. Auto-save is **on by default**: edits persist half a second after typing, a transient “Saving…/Saved” status confirms the write, and an interrupted editor restores its unsaved draft. Turn auto-save off in Settings to use the explicit Save action and dirty-state confirmation instead.
 - **Search** titles and bodies with a short debounce, a clear affordance, result counts, and a dedicated no-results state.
-- **Pin, unpin, and delete** from each card’s overflow menu or long press. Pinned notes sort first, deletes can be undone from the Snackbar, and pin changes are announced.
-- **Explicit states** for loading, empty, search-empty, error, and content, with a scrollable empty state that survives large font scales.
+- **Pin, unpin, and delete** from each card’s overflow menu or long press. Pinned notes sort first with a short pin confirmation, deletes can be undone from the Snackbar, and pin changes are announced.
+- **Explicit states** for loading, empty, search-empty, error, and content, with a scrollable empty state that survives large font scales and skeleton cards while the first load resolves.
 
 ### Tasks
 
@@ -28,9 +28,10 @@ The project is intentionally small: it is a practical reference for Android fund
 
 - **Local persistence** with Room — no account and no network required.
 - **Material 3 light/dark theme** built from semantic colour, type, spacing, and component tokens. Choose System, Light, or Dark in Settings, or use the app-bar theme action to pin light/dark.
-- **Settings** for appearance, notification permission, exact-alarm access, default reminder, and backup/restore. About shows the app version and local note/task counts.
+- **Fluid, accessible motion**: shared-element note editor transitions, a tab fade, skeleton loading cards, and a short pin confirmation. Motion respects the system animation scale, so animated skeletons and transitions are skipped when animations are disabled.
+- **Settings** for note auto-save, appearance, notification permission, exact-alarm access, default reminder, and backup/restore. About shows the app version and local note/task counts.
 - **Backup and restore** through the system file picker. Backups are human-readable `notes-backup.json` files containing both notes and tasks; restore supports Merge or Replace.
-- **Responsive layout**: a bottom navigation bar on phones and a navigation rail on tablets/foldables, a 2/3/4-column note grid, a 720dp content cap for Tasks/Settings, and tablet-aware editor margins. System bars and the IME are handled edge-to-edge on API 30+.
+- **Responsive layout**: a bottom navigation bar on phones and a navigation rail on tablets/foldables, a 2/3/4-column note grid, a 720dp content cap for Tasks/Settings and the note editor, and tablet-aware editor margins. System bars and the IME are handled edge-to-edge on API 30+.
 
 > The interface has been validated on an Android 14 emulator at phone and tablet widths, in light and dark themes, and at 200% font scale. Interactive controls include content descriptions and 48dp touch targets. See [`docs/UI_UX_PLAN.md`](docs/UI_UX_PLAN.md) for the design rationale and validation protocol.
 
@@ -62,9 +63,9 @@ My-Notes/
 │   │   │   ├── MainActivity.java              ← Thin shell: tab host, bottom bar/rail
 │   │   │   ├── NotesFragment.java             ← Notes list, search, states, pin/delete/undo
 │   │   │   ├── TasksFragment.java             ← Task filters, complete/delete/undo
-│   │   │   ├── NotesTakeActivity.java         ← Note editor, dirty check, save validation
+│   │   │   ├── NotesTakeActivity.java         ← Note editor, autosave/draft recovery, transitions
 │   │   │   ├── TaskEditorActivity.java        ← Due date/time, reminders, done, delete
-│   │   │   ├── SettingsActivity.java          ← Theme, reminders, counts, backup/restore
+│   │   │   ├── SettingsActivity.java          ← Auto-save, theme, reminders, counts, backup/restore
 │   │   │   ├── NotesApplication.java          ← Theme bootstrap and notification channel
 │   │   │   ├── Adapter/
 │   │   │   │   ├── NoteListAdapter.java
@@ -81,19 +82,24 @@ My-Notes/
 │   │   │   │   └── BootReceiver.java          ← Reschedule after boot/update
 │   │   │   └── util/
 │   │   │       ├── AppBarActions.java
+│   │   │       ├── AppExecutors.java
 │   │   │       ├── AppPreferences.java
 │   │   │       ├── BackupManager.java         ← notes-backup.json reader/writer
 │   │   │       ├── DirtyStateController.java
 │   │   │       ├── MaxWidthLinearLayout.java
+│   │   │       ├── Motion.java                ← Reduced-motion-aware durations
+│   │   │       ├── NoteDraftStore.java        ← Unsaved editor draft journal
 │   │   │       ├── ReminderScheduler.java
 │   │   │       ├── TaskDates.java
 │   │   │       └── WindowInsetsHelper.java
 │   │   └── res/
+│   │       ├── anim/                          ← Editor enter/exit animations
 │   │       ├── color/                         ← Stateful stroke, nav, and disabled-text selectors
 │   │       ├── drawable/                      ← Theme, task, reminder, and navigation icons
 │   │       ├── layout/                        ← Shell, notes, tasks, settings, editors, cards
-│   │       ├── layout-sw600dp/                ← Tablet navigation-rail shell
+│   │       ├── layout-sw600dp/                ← Tablet rail shell and capped note editor
 │   │       ├── menu/                          ← Navigation, overflow, editor actions
+│   │       ├── transition/                    ← Shared-element enter/return transition sets
 │   │       ├── values/                        ← Tokens, themes, dimensions, strings
 │   │       ├── values-night/                  ← Dark semantic colours and system bar theme
 │   │       ├── values-sw600dp/                ← Tablet spacing and 3-column grid
@@ -260,8 +266,8 @@ Run `make help` for the full list.
 | `make test` | Run JVM unit tests |
 | `make connected-test` | Run instrumented Room/backup tests on a device or emulator |
 | `make lint` | Run Android lint |
-| `make release` | Build the unsigned release APK |
-| `make bundle` | Build the unsigned release App Bundle |
+| `make release` | Build the release APK (signed when the `MYNOTES_*` variables are set) |
+| `make bundle` | Build the release App Bundle (same signing rules) |
 | `make uninstall` | Uninstall the app from the connected device |
 | `make logcat` | Stream device logcat |
 | `make clean` | Delete Gradle build outputs |
@@ -273,6 +279,33 @@ make debug JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 make install ANDROID_HOME=/path/to/android-sdk
 make local-properties FORCE=1
 ```
+
+### CI and signed releases
+
+GitHub Actions runs [`.github/workflows/android-build-release.yml`](.github/workflows/android-build-release.yml) on every push to `master`, every pull request, and every `v*` tag. The build job installs Platform 34 and Build-Tools 34.0.0 explicitly, then runs `assembleDebug testDebugUnitTest lintDebug` and uploads `app-debug.apk` as an artifact.
+
+A tag push also runs the release job, which refuses to publish rather than silently uploading an unsigned APK. Configure these repository secrets first:
+
+| Secret | Purpose |
+| :--- | :--- |
+| `KEYSTORE_BASE64` | Base64-encoded release keystore (`.jks`) |
+| `KEYSTORE_PASSWORD` | Keystore password |
+| `KEY_ALIAS` | Release key alias |
+| `KEY_PASSWORD` | Release key password |
+
+The job decodes the keystore to a temporary file, exports the `MYNOTES_*` variables consumed by `app/build.gradle.kts`, builds a signed APK, and creates a GitHub Release for the tag with the APK attached.
+
+To sign locally, export the same variables and run Gradle:
+
+```bash
+export MYNOTES_KEYSTORE_FILE="$HOME/keys/mynotes.jks"
+export MYNOTES_KEYSTORE_PASSWORD="…"
+export MYNOTES_KEY_ALIAS="mynotes"
+export MYNOTES_KEY_PASSWORD="…"
+make release
+```
+
+Without those variables the release build still succeeds but produces an unsigned APK, which is useful for smoke tests but should not be distributed.
 
 ---
 
@@ -383,13 +416,17 @@ Log out and back in after changing groups, then reconnect the USB cable. On some
 
 ### First launch shows an empty screen
 
-The empty state is intentional when Room has no data. Tap **Create first note** on the Notes tab, or open the Tasks tab and tap **Create your first task**, to open the relevant editor. If a spinner never resolves, check for a Room/database error:
+The empty state is intentional when Room has no data. Tap **Create first note** on the Notes tab, or open the Tasks tab and tap **Create your first task**, to open the relevant editor. If the loading skeleton never resolves, check for a Room/database error:
 
 ```bash
 adb logcat -s NotesFragment TasksFragment SettingsActivity TaskEditorActivity
 ```
 
 The debug build logs database failures under the fragment/activity tags.
+
+### Release APK is unsigned
+
+This is expected when the `MYNOTES_KEYSTORE_FILE`, `MYNOTES_KEYSTORE_PASSWORD`, `MYNOTES_KEY_ALIAS`, and `MYNOTES_KEY_PASSWORD` variables are not set. Export all four (see [CI and signed releases](#ci-and-signed-releases)) before running `make release` if you need an installable, signed build.
 
 ### Reminders do not appear
 
@@ -409,8 +446,8 @@ If the app was force-stopped, Android may defer its alarms until the app is laun
 
 ```text
 app/build/outputs/apk/debug/app-debug.apk       # debug APK
-app/build/outputs/apk/release/                  # unsigned release APK
-app/build/outputs/bundle/release/               # unsigned release AAB
+app/build/outputs/apk/release/                  # release APK (signed when MYNOTES_* vars are set)
+app/build/outputs/bundle/release/               # release AAB (same signing rules)
 app/build/reports/lint-results-debug.html       # lint report
 ```
 
@@ -425,12 +462,16 @@ app/build/reports/lint-results-debug.html       # lint report
 | Adaptive note grid, search, loading/empty/search-empty/error states | Implemented |
 | Pin-first sorting, overflow menu, long press, delete undo, TalkBack announcements | Implemented |
 | Note editor toolbar, save validation, dirty-state confirmation, edited-date metadata | Implemented |
+| Note auto-save, inline saving/saved status, draft journal and recovery | Implemented |
+| Shared-element note editor transitions, tab fade, skeleton loading cards, pin animation | Implemented |
+| Reduced-motion support (system animation scale disables shimmer and transitions) | Implemented |
 | Task list filters/counts/states, complete toggle, delete undo, FAB | Implemented |
 | Task editor, due date/time, reminder chips, default reminder, done switch | Implemented |
 | Notification channel, exact/inexact alarms, boot/update rescheduling | Implemented |
 | Settings: theme, notifications, precise timing, default reminder, counts | Implemented |
 | Backup/restore: SAF, JSON format/version validation, Merge/Replace | Implemented |
 | Tablet navigation rail, 720dp Tasks/Settings content cap, responsive editor margins | Implemented |
+| GitHub Actions build/test/lint workflow with signed `v*` tag releases | Implemented (requires keystore secrets) |
 | Edge-to-edge system bars on API 30+, fitted windows below API 30, IME padding | Implemented |
 | `ListAdapter`/`DiffUtil`, stable IDs, saved scroll/filter/search state | Implemented |
 | JVM tests and lint | Passing (`make test`, `make lint`) |
