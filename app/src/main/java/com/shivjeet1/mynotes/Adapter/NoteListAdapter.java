@@ -110,6 +110,7 @@ public class NoteListAdapter extends ListAdapter<Notes, NoteListAdapter.NotesVie
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
         Notes note = getItem(position);
         boolean pinned = Boolean.TRUE.equals(note.getPinned());
+        holder.itemView.setTransitionName("note_" + note.getID());
 
         String title = note.getTitle();
         holder.titleTxt.setText(TextUtils.isEmpty(title)

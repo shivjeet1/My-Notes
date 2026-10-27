@@ -2,6 +2,7 @@ package com.shivjeet1.mynotes;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -62,6 +63,9 @@ public class NotesTakeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            postponeEnterTransition();
+        }
         setContentView(R.layout.activity_notes_take);
 
         WindowInsetsHelper.apply(this, findViewById(R.id.root));
@@ -120,6 +124,9 @@ public class NotesTakeActivity extends AppCompatActivity {
             NoteDraftStore.clear(this, notes.getID());
             draftBanner.setVisibility(View.GONE);
         });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            titleEdt.post(this::startPostponedEnterTransition);
+        }
     }
 
     private void readExistingNote() {
@@ -376,9 +383,20 @@ public class NotesTakeActivity extends AppCompatActivity {
         if (autosaveEnabled) {
             flushAutosaveNow();
             NoteDraftStore.clear(this, notes.getID());
-            super.onBackPressed();
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition();
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    public void finish() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition();
+            return;
+        }
+        super.finish();
     }
 }

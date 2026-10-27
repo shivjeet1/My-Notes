@@ -1,7 +1,9 @@
 package com.shivjeet1.mynotes;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
+import androidx.core.app.ActivityOptionsCompat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -268,6 +270,21 @@ public class NotesFragment extends Fragment implements PopupMenu.OnMenuItemClick
         Intent intent = new Intent(requireContext(), NotesTakeActivity.class);
         if (note != null) {
             intent.putExtra(NotesTakeActivity.EXTRA_OLD_NOTE, note);
+        }
+        View shared = null;
+        if (note != null) {
+            RecyclerView.ViewHolder holder = recyclerView.findViewHolderForItemId(note.getID());
+            if (holder != null) {
+                shared = holder.itemView;
+            }
+        }
+        if (shared != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            shared.setTransitionName("note_" + (note == null ? 0 : note.getID()));
+            ActivityOptions.makeSceneTransitionAnimation(requireActivity(),
+                    android.util.Pair.create(shared, "note_editor")).toBundle();
+        } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptions.makeCustomAnimation(requireContext(),
+                    R.anim.enter_rise, R.anim.exit_fade_out).toBundle();
         }
         noteEditorLauncher.launch(intent);
     }

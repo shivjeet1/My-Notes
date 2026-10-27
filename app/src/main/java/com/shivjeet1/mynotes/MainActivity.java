@@ -1,5 +1,6 @@
 package com.shivjeet1.mynotes;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void showTab(int itemId) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && com.shivjeet1.mynotes.util.Motion.isEnabled(this)) {
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        }
         Fragment notes = getSupportFragmentManager().findFragmentByTag(TAG_NOTES);
         Fragment tasks = getSupportFragmentManager().findFragmentByTag(TAG_TASKS);
 
