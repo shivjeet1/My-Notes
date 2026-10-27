@@ -293,7 +293,27 @@ A tag push also runs the release job, which refuses to publish rather than silen
 | `KEY_ALIAS` | Release key alias |
 | `KEY_PASSWORD` | Release key password |
 
-The job decodes the keystore to a temporary file, exports the `MYNOTES_*` variables consumed by `app/build.gradle.kts`, builds a signed APK, and creates a GitHub Release for the tag with the APK attached.
+Reuse the keystore that signed any earlier public release so existing installs can upgrade in place. If you do not have one, create it outside the repository and back it up; Android refuses updates signed with a different key:
+
+```bash
+mkdir -p "$HOME/keys"
+keytool -genkeypair -v \
+  -keystore "$HOME/keys/mynotes.jks" \
+  -alias mynotes \
+  -keyalg RSA -keysize 4096 -validity 10000
+base64 -w0 "$HOME/keys/mynotes.jks" > "$HOME/keys/mynotes.jks.b64"
+```
+
+Then add the secrets with the GitHub CLI (or under **Settings → Secrets and variables → Actions**):
+
+```bash
+gh secret set KEYSTORE_BASE64 < "$HOME/keys/mynotes.jks.b64"
+gh secret set KEYSTORE_PASSWORD   # prompts for the store password
+gh secret set KEY_ALIAS --body 'mynotes'
+gh secret set KEY_PASSWORD        # prompts for the key password
+```
+
+The job decodes the keystore to a temporary file, exports the `MYNOTES_*` variables consumed by `app/build.gradle.kts`, builds a signed APK, and creates a GitHub Release for the tag with the APK attached. Re-run the failed release job for an existing tag after adding the secrets, or push a new `v*` tag.
 
 To sign locally, export the same variables and run Gradle:
 
